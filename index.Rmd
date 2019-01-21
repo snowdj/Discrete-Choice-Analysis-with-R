@@ -1,0 +1,68 @@
+--- 
+title: "Discrete Choice Analysis with R"
+author: "Antonio Paez"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+output: bookdown::gitbook
+documentclass: book
+bibliography: [book.bib, packages.bib]
+biblio-style: apalike
+link-citations: yes
+github-repo: paezha/Discrete-Choice-Analysis-with-R
+description: "These notes were created  by Antonio Paez as a resource for teaching a graduate discrete choice analysis course (GEOG 738) at McMaster University."
+---
+
+# Preface {-}
+
+>'Would you tell me, please, which way I ought to go from here?'
+>
+>'That depends a good deal on where you want to get to,' said the Cat.
+>
+>'I don't much care where -' said Alice.
+>
+>'Then it doesn't matter which way you go,' said the Cat.
+>
+>'- so long as I get SOMEWHERE,' Alice added as an explanation.
+>
+>'Oh, you're sure to do that,' said the Cat, 'if you only walk long enough.'
+>
+> --- Lewis Carroll, Alice in Wonderland
+
+
+>"We are our choices."
+>
+> --- Jean-Paul Sartre
+
+## Choices choices choices {-}
+
+The field of spatial statistics has experienced phenomenal growth in the past 20 years. 
+
+From being a niche subdiscipline in quantitative geography, statistics, regional science, and ecology at the beginning of the 1990s, it is now a mainstay of applications in a multitude of fields, including medical imaging, remote sensing, civil engineering, geology, statistics and probability, spatial epidemiology, end ecology, to name just a few disciplines.
+
+The growth in research and applications in spatial statistics has been in good measure fueled by the explosive growth in geotechnologies: technologies for sensing and describing the natural, social, and built environments on Earth. An outcome of this is that spatial data are, to an unprecedented level, within the reach of multitudes. Hardware and software have become cheaper and increasingly powerful, and we have transitioned from a data poor environment (in all respects, but particularly in terms of spatial data) to a data rich environment. Twenty years ago, for instance, technical skills in spatial analysis included tasks such as digitizing. As a Masters student, I spent many boring hours digitizing paper maps before I could do any analysis on our single-seat (and relatively expensive) Geographic Information System (GIS). I was more or less a freak: altough there was an institutional push to adopt GIS, relatively few in my academic environment saw the value of spending hours doing what nowadays we would think of as low-level technical work. Surely, the time of a Master student, let alone a professional researcher or business analyst, is now more valuable than that. Indeed, very little time is spent anymore in such tasks low-level tasks, as data increasingly are collected and disseminated in a digital format. Instead, there is a huge appetite for what could be called the _brainware_ of spatial analysis, the intelligence counterpart of the hardware, software, and data provided by geotechnologies.
+
+So what is spatial statistics?
+
+Very quickly, I will define spatial statistics as the application of statistical techniques to data that have geographical references - in other words, to the statistical analysis of maps. 
+
+Like statistics more generally, spatial statistics is interested in hypothesis testing and inference. What distiguishes it as a branch of the broader field of statistics is its explicit interest in situations where data are not independent from each other (like throws of a dice) but rather display systemic associations. These associations, when seen through the lens of cartography, can manifest themselves as patterns of similarities (birds of a feather flock together) or disimilarities (repulsion due spatial competition among firms) - as two common examples of spatial patterns.
+
+Spatial statistics covers a broad array of techniques for the analysis of spatial patterns, including testing whether patterns are random or not, and a wide variety of modelling approaches as well. These tools enhance the brainware of analysts by allowing them to identify and possibly model patterns for inferring processes and/or for making spatial predictions. 
+
+## Plan {-}
+
+The plan with these notes is to introduce discrete choice analysis in an intuitive way. To achieve this, I use examples and coding, lots of coding. There are some classical references, for instance Ben-Akiva and Lerman [REF:1985] and Train [REF:], and then more specialized books such as Hensher et al. [REF:Stated Choice]. While these notes should be appealing to students or others who are approaching this topic for the first time, I strongly encourage becoming acquainted with these books. In particular, I have relied heavily on Train's text to organize the present notes, and thus the notes follow a thematic approach, moving from the fundamentals, introducing the logit model, and then by families of models, i.e., GEV, probit, etc.
+
+Each section covers a topic that builds on previous material. At the moment, my aim is that every section is followed by an activity.
+
+I have used the materials presented in this texts (in different incarnations) for teaching discrete choice analysis in different settings. Primarily, these notes have been used in the course **GEOG 738** _Discrete Choice Analysis_ at McMaster University. This course is a full (Canadian) graduate term, which typically means 11 or 12 weeks of classes. The course is organized as a 2-hour seminar that is offered once per week. Accordingly, each section is designed to cover very approximately the material that I am used to cover in a 2 hour seminar.
+
+As I continue to work on these notes, I hope to be able to add optional (or bonus) chapters, that could be used 1) to extend a course on spatial statistics beyond the 13 week horizon of the Canadian term, or 2) to offer more advanced material to interested readers.
+
+## Audience {-}
+
+The notes were designed for a graduate course in geography, but are not necessarily limited to use by geographers, and could be a valuable resource to graduate students and others interested in discrete choice analysis and applications in economics, planning, transportation engineering, public health, etc. The prerequisites are an introductory college/university level course on multivariate statistics, ideally covering the fundamentals of probability theory and hypothesis testing. Working knowledge of multivariate linear regression analysis is a bonus but not strictly required.
+
+## Requisites {-}
+
+To fully benefit from this text, up-to-date copies of [R](https://cran.r-project.org/) and [RStudio](https://www.rstudio.com/) are highly recommended. There are different packages that implement discrete choice methods in `R`. I will particularly rely on the packages [`mlogit`](https://CRAN.R-project.org/package=mlogit) and [`gmnl`](https://CRAN.R-project.org/package=gmnl).
