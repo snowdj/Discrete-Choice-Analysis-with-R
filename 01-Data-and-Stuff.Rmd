@@ -48,7 +48,7 @@ print("Hello, Discrete Choice Analysis!")
 
 If you are working with the Notebook version of the document, you can run the code by clicking the 'play' icon on the top right corner of the chunk. If you are reading the web-book version of the document, you will often see that the code has already been executed. You can still try it by copying and pasting into your R or RStudio console. Whichever way you are working, you might want to give it a try now! You will see that the chunk of code above instructed R (and trough R the computer) to `print` (or display on the screen) some text.
 
-## Learning Objectives
+## Learning objectives
 
 In this practice, you will learn about:
 
@@ -57,6 +57,10 @@ In this practice, you will learn about:
 3. Data classes, data types, and data transformations.
 4. The use of packages in R.
 5. Basic visualization.
+
+## Suggested readings
+
+- Grolemund, G., Wickham, H. [-@wickham2016r] R for Data Science, **Chapters 3-5**, O'Reilly Media.
 
 ## Ways of measuring stuff
 
@@ -129,7 +133,7 @@ Installing a package is similar to acquiring a book for your library. The book i
 ```{r}
 library(tidyverse)
 library(readr)
-library(caret)
+#library(caret)
 library(mlogit)
 ```
 
@@ -358,23 +362,25 @@ A last note. Many other visualization alternatives (for instance, Excel) provide
 
 ## Exercise
 
-### Instructions
+### Questions
 
-Invoke dataset `Mode` from package `mlogit`. To do this you need to first load the package. Once you have done so, usage of datasets is as follows:
+1. Define "model".
+
+2. Why are models on a 1-to-1 scale undesirable?
+
+3. Invoke dataset `Mode` from package `mlogit`. To do this you need to first load the package. Once you have done so, usage of datasets is as follows:
 ```{r eval=FALSE}
 data("Mode")
 ```
 
 This is a dataset with choices about mode of transportation.
 
-### Questions
+4. Describe this dataset. How many variables are there and of which type (i.e., categorical/quantitative)?
 
-1. Describe this dataset. How many variables are there and of which type (i.e., categorical/quantitative)?
+5. How many different modes of transportation are in this data set? What is the most popular mode? What is the least popular mode?
 
-2. How many different modes of transportation are in this data set? What is the most popular mode? What is the least popular mode?
+6. In general, what is the most expensive mode? The least expensive?
 
-3. In general, what is the most expensive mode? The least expensive?
+7. Create a plot showing the univariate distributions of time by car and time by bus. Discuss.
 
-4. Create a plot showing the univariate distributions of time by car and time by bus. Discuss.
-
-5. How do choices relate to cost by the different modes?
+8. How do choices relate to cost by the different modes?
