@@ -11,7 +11,7 @@ output: html_notebook
 
 ## Why modelling choices?
 
-In \@ref(chapter-1) we discussed in a general fashion the use of models. There, we argued that modelling is an activity that helps us to isolate in a systematic way certain aspects of a process or thing, by way of abstraction and generalization. There are many kinds of models: analog (like sculptures, maquettes, scale models), conceptual (like mental maps), and mathematical/statistical models.
+In Chapter \@ref(chapter-1) we discussed in a general fashion the use of models. There, we argued that modelling is an activity that helps us to isolate in a systematic way certain aspects of a process or thing, by way of abstraction and generalization. There are many kinds of models: analog (like sculptures, maquettes, scale models), conceptual (like mental maps), and mathematical/statistical models.
 
 The raw materials of mathematical/statistical models are observations about the process or thing of interest, usually measurements that provide _data_. The tools are the statistical and mathematical techniques used to convert data into _information_. And the technical expertise is the knowledge and ability of the modeler to use the appropriate tools to the data, in order to extract as much information as possible, given the characteristics of the data and the process or thing.
 
@@ -201,7 +201,6 @@ ggplot(data = df, aes(x, y)) +
   geom_hline(yintercept = 0) + # Add y axis
   geom_vline(xintercept = 0) + # Add x axis
   ylab("f(x)") # Label the y axis
-
 ```
 
 It is easy to see that the value of the function is always equal to or greater than zero. You can also verify that the area under the curve in this case is simply the area of the rectangle $b \times h$, where the base of the rectangle is $b = L - (-L)$ and the height is $h=\frac{1}{2L}$:
@@ -357,7 +356,7 @@ f(x) = \left\{
         \begin{array}{lc}
             0 & \quad x \le 0 \\
             4x^3 & \quad 0 > x > 1 \\
-            0 & \quad x \ge 1 \\
+            0 & \quad x \ge 0 \\
         \end{array}
     \right.
 $$
