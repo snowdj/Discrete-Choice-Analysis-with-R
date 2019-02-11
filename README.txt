@@ -6,7 +6,7 @@ bookdown::render_book('index.Rmd', 'bookdown::gitbook')
 
 TASKS:
 
---Rename files using this format:
+--NOTE: name files using this format:
 
 00-word-word-word.Rmd
 

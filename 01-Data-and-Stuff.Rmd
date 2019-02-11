@@ -113,7 +113,7 @@ It is important to understand the different scales of measurement to be able to 
 
 ## Importing data
 
-There are several different ways of importing data in R. For this example, we will use part of a dataset that was analyzed by Whalen et al. [@Whalen2013].
+There are several different ways of importing data in R. For this example, we will use part of a dataset that was analyzed by Whalen et al. [-@Whalen2013].
 
 At the very beginning, it is good practice to clear the workspace, to ensure that there are no extraneous items there. The workspace is where objects reside in memory during a session with R. The function for removing variables from the workspace is `rm()`. Another useful function is ``ls`, which retrieves a list of things in the workspace. So essentially we are asking R to remove all things in the workspace: 
 ```{r}

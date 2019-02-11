@@ -43,7 +43,7 @@ Does this mean that the state of the universe is not determined by the past? Not
 
 Remember that the source for the document you are reading is an R Notebook. Throughout the notes, you will find examples of code in segments of text called _chunks_. This is an example of a chunk:
 ```{r}
-print("Well, hello there, Juan de Dios!")
+print("Hola, Juan de Dios!")
 ```
 
 If you are working with the Notebook version of the document, you can run the code by clicking the 'play' icon on the top right corner of the chunk. If you are reading the web-book version of the document, you will often see that the code has already been executed. You can still try it by copying and pasting into your R or RStudio console.
