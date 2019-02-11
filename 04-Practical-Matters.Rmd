@@ -44,10 +44,11 @@ If you are working with the Notebook version of the document, you can run the co
 
 In this practice, you will learn about:
 
-1. The Extreme Value distribution.
-2. The binary logit model.
-3. The multinomial logit model. 
-4. Properties of the logit model.
+1. Specification of utility functions.
+2. Maximum likelihood estimation.
+3. Estimation of multinomial logit models.
+4. McFadden's $\rho^2$
+5. The likelihood ratio test.
 
 ## Suggested readings
 
