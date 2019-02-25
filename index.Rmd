@@ -58,7 +58,7 @@ As these simple examples illustrate, bartering is a complicated way of setting p
 
 Far from being the root of all evil, it is almost certain that no complex economy can exist without the invention of money. The complexities of bartering explain why monetary systems were invented: the need for a common standard for exchange. Instead of needing to figure out how many shoes is worth a chicken and how many chickens a divorce, everything is measured using the same metric: shells, squares of deer skin, rupees, pesos, or dollars.
 
-## Price Mechanisms
+## Price Mechanisms {-}
 
 The limitations of bartering explain the necessity of monetary systems. A common currency frees the maker of shoes from the need to calculate in chickens the cost of his divorce. But it does not explain how prices are set in the common currency.
 
