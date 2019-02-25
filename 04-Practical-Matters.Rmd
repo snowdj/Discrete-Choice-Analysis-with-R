@@ -16,7 +16,7 @@ output: html_notebook
 
 ## Theory and practice
 
-Chapters \@ref(chapter-2) and \@ref(chapter-3) presented a conceptual framework (a theory of behavior) and the necessary apparatus (based on probability theory) to implement the conceptual framework. This theoretical introduction was necessary to begin work from a solid foundation, and it provides an intuitive and elegant framework to study decision-making, and a powerful one too; Daniel McFadden was awarded the Sveriges Riksbank Prize in Economic Sciences (Nobel Prize)[https://www.nobelprize.org/prizes/economic-sciences/2000/mcfadden/diploma/] for his contributions to random utility modelling.
+Chapters \@ref(chapter-2) and \@ref(chapter-3) presented a conceptual framework (a theory of behavior) and the necessary apparatus (based on probability theory) to implement the conceptual framework. This theoretical introduction was necessary to begin work from a solid foundation, and it provides an intuitive and elegant framework to study decision-making, and a powerful one too; Daniel McFadden was awarded the Sveriges Riksbank Prize in Economic Sciences ([Nobel Prize](https://www.nobelprize.org/prizes/economic-sciences/2000/mcfadden/diploma/)) for his contributions to random utility modelling.
 
 Although not described in detail in previous chapters, it is worthwhile to dwell for a moment on the history of the development of the logit model as a random utility model.
 
@@ -75,11 +75,12 @@ load("Commute Mac.RData")
 
 ## The anatomy of utility functions
 
-At the end Chapter \@ref(chapter-3) we had, for the first time, a closer look at the systematic utility of a discrete choice model. It is useful to think about the anatomy of the systematic utility. Previously, we said that some variables vary across utility functions; these are typically the attributes that describe the various alternative (e.g., level of service and cost). The variables that describe the decision-maker do _not_ vary by alternative. This has implications, as seen before, for how the variables are entered. Since the model works on the basis of _differences_ between utilities, the attributes must actually measure different levels of something or vanish.
+At the end Chapter \@ref(chapter-3) we took, for the first time, a closer look at the systematic utilities of discrete choice models. It is useful to think about the anatomy of a typical systematic utility function. Previously, we said that some variables vary across utility functions; these are typically the attributes that describe the various alternatives (e.g., level of service and cost). The variables that describe the decision-maker do _not_ vary by alternative. This has implications, as seen before, for how the variables are entered into the functions. Since the model works on the basis of _differences_ between utilities, the attributes must actually measure different levels of something or vanish.
 
 We will describe the utilities in terms of the way different variables are introduced in the utility functions. As before, we will assume that the location parameters of the distribution are absorbed by $J-1$ utility functions (where $J$ is the number of alternatives). 
 
 Consider first variables that vary across alternatives. These variables can have a generic coefficient or they can have alternative-specific coefficients, as seen here:
+
 $$
 
 \begin{array}{l}
@@ -106,9 +107,11 @@ $$
               \end{array}
               }^{\text{alternative vars. with specific coefficients}}
 $$
-In many cases it sensible to have generic coefficients. For instance, if the variable is cost, we might assume that one dollar is valued equally irrespective of the alternative. In other cases, alternative-specific coefficients might be informative. For instance, a consistent finding is that time spent traveling by public transportation is perceived as being more expensive than time traveling by car. Occasionally, as well, an attribute might be specific to an alternative: for instance, waiting time is often implicitly zero for travel by car and active modes of transportation (i.e., walking and cycling).
+
+In many cases it sensible to have generic coefficients. For instance, if the variable is cost, we might assume that one dollar is valued equally irrespective of the it is spent on alternative. In other cases, alternative-specific coefficients might be informative. For instance, a consistent finding is that time spent traveling by public transportation is perceived as being more expensive than time traveling by car. Occasionally, as well, an attribute might be specific to an alternative: for instance, waiting time is often implicitly zero for travel by car and active modes of transportation (i.e., walking and cycling).
 
 The differences of the utilities are as follows:
+
 $$
 \begin{array}{lll}
     V_{i2}-V_{i1}=&(\mu_2 - 0) & + &\beta_1(x_{i2} - x_{i1}) & + &(\delta_2w_{i2} - \delta_1w_{i1})\\
@@ -117,7 +120,7 @@ $$
 \end{array}
 $$
 
-Variables that vary across individuals but not the alternatives can be introduced with alternative-specific coefficients:
+Variables that vary across individuals but not by alternative can be introduced with alternative-specific coefficients:
 $$
 
 \begin{array}{l}
@@ -151,6 +154,7 @@ $$
               \end{array}
               }_\text{individual vars with specific coefficients}
 $$
+
 Following the example above, the differences of utilities are:
 $$
 \begin{array}{lll}
@@ -215,6 +219,7 @@ $$
               \end{array}
               }^{\text{alternative vars. with specific coefficients}}
 $$
+
 And so the differences in utilities are:
 $$
 \begin{array}{lll}
@@ -228,17 +233,17 @@ Understanding the anatomy of utility functions is essential to properly specify 
 
 ## Example: Specifying the utility functions
 
-We will now proceed with a practical example, using the dataset that you encountered before in Chapter \@ref(chapter-1). This dataset contains information on various modes of transportation used by people commuting to McMaster University in Canada [@Whalen2013]. The dataset was loaded above as part of the preliminaries of this chapter. We can begin by exploring the data. First, we notice that this is a dataframe that has been prepared for use with the `mlogit` package:
+We will now proceed to work with a practical example, using the dataset that you encountered before in Chapter \@ref(chapter-1). This dataset contains information on various modes of transportation used by people commuting to McMaster University in Canada [@Whalen2013]. The dataset was loaded above as part of the preliminaries of this chapter. We can begin by exploring the data. First, we notice that this is a dataframe that has been prepared for use with the `mlogit` package:
 ```{r}
 class(mc_commute)
 ```
 
-Please note that this is the same dataset that you used in Chapter \@ref(chapter-1), but not the same file. For convenience, the dataset was organized for use with `mlogit`. The contents of the dataframe can be quickly seen by means of the function `head()`. This function will display the first few top rows of the dataframe:
+Please note that this is the same dataset that you used in Chapter \@ref(chapter-1), but not the same file. For convenience, the dataset was pre-organized for use with `mlogit`. The contents of the dataframe can be quickly seen by means of the function `head()`. This function will display the first few top rows of the dataframe:
 ```{r}
 head(mc_commute, 8)
 ```
 
-As you can see, the dataframe has been organized in a particular way. Now, instead of each row being an individual, each row is a choice situation. Since there are four alternatives in this case, each row corresponds to the choice situation for an alternative for an individual. As you can see, the row names now have the format `#.Alt`, where `#` is the number of the decision maker and `Alt` is the name of the alternative. In this way we can see that the first decision-maker, faced with four alternatives, chose HSR (public transportation) - as seen in the column `choice`. It can be seen that the second decision-maker also chose HSR. And so on.
+As you can see, the dataframe has been organized in a particular way. Now, instead of each row being an individual, each row is a choice situation. Since there are four alternatives in this case, each row corresponds to the choice situation for an alternative for an individual. We notice that the row names now have the format `#.Alt`, where `#` is the number of the decision maker and `Alt` is the name of the alternative. In this way the first four rows of the table correspond to the first decision-maker who, faced with four alternatives, chose HSR (public transportation) - as recorded in the column `choice`. The next four rows correspond to the second decision-maker in the sample (who also chose HSR), and so on, four rows per decision-maker. More generally, there will be $J$ ro. And so on.
 
 The first step is to specify the utility functions for the desired model. The package `mlogit` uses for formuals `mFormula` objects that build upon the [`Formula` package](https://CRAN.R-project.org/package=Formula ) for multi-component formulas. As seen above, utility functions can potentially have multiple components, so the utilities to build formulas are quite useful.
 
@@ -254,7 +259,7 @@ colnames(mc_commute)
 
 Besides identifier variable `id` and `chid`, and the variable for `choice`, we see that several variables are specific to the individual decision-makers. These are `parking` (availability of a parking pass), `vehind` (whether the decision-maker has individual access to a private vehicle), `gender`, `age`, `shared` (living in shared accommodations away from the family home), `family` (living at the family home), and `child` (minors are present in the household). Furthermore, some variables relate to the physical environment of the place of residence (`street_density` and `sidewalk_density`), in addition to the coordinates of the place of residence (geocoded to the nearest major intersection or postal code centroid). One variable is alternative specific, namely `time` (travel time in minutes). And three variables are specific to public transportation, namely `HSR.access` (access time to public transportation in minutes), `HSR.wait` (waiting time in minutes), and `HSR.transfer` (number of transfers when traveling by public transportation). 
 
-We can begin by defining a very simple formulat that considers only travel time. We will call this `f1`:
+We can begin by defining a very simple formula that considers only travel time. We will call this `f1`:
 ```{r}
 f1 <- mFormula(choice ~ time)
 ```
@@ -265,6 +270,7 @@ head(model.matrix(f1, mc_commute), 8)
 ```
 
 We can see that the formula includes by default the alternative specific coefficients, in this case using as a reference cycling. The corresponding utility functions are as follows:
+
 $$
 \begin{array}{l}
                 V_{i\text{Cycle}} =\\
@@ -299,6 +305,7 @@ head(model.matrix(f2, mc_commute), 8)
 ```
 
 And the utility functions are therefore:
+
 $$
 \begin{array}{l}
                 V_{i\text{Cycle}} =\\
@@ -342,6 +349,7 @@ head(model.matrix(f3, mc_commute), 8)
 ```
 
 The utility functions for this are:
+
 $$
 \begin{array}{l}
                 V_{i\text{Cycle}} =\\
@@ -374,6 +382,7 @@ $$
 $$
 
 Given the utility functions, the logit probabilities for each alternative are:
+
 $$
 \begin{array}{l}
     P(\text{Cycle}) = \frac{e^{V_{\text{Cycle}}}}{e^{V_{\text{Cycle}}}+e^{V_{\text{Walk}}}+e^{V_{\text{HSR}}}+e^{V_{\text{Car}}}}\\
@@ -400,6 +409,7 @@ $$
 where $P_{ij}$ is the probability of decision-maker $i$ selecting alternative $j$ and $y_{ij}$ is an indicator variable that takes the value of $1$ if individual $i$ chose alternative $j$ and $0$ otherwise. The effect of the indicator variable is to turn the probabilities on and off, since $P^0 = 1$ and $P^1 = P$. Notice that the likelihood function is bounded between 0 and 1, but in the case of the logit model is never exactly zero nor one, since the logit probabilities never thake those values.
 
 Lets explore the behavior of this function by means of a simple example, with the binomial logit (i.e., only two alternative in the choice set), in which case the likelihood function becomes:
+
 $$
 L = \prod_{i=n}^N P_{iA}^{y_{iA}}P_{iB}^{y_{iB}} = 
     \Bigg(\frac{e^{V_{iA}}}{e^{V_{iA}} + e^{V_{iB}}}\Bigg)^{y_{iA}}
@@ -422,6 +432,7 @@ kable(ts, "html") %>%
 ```
 
 Based on this sample, we can specify the utility functions in this fashion:
+
 $$
 \begin{array}{l}
                 V_{iA} = 0 &+& \beta x_{iA}\\

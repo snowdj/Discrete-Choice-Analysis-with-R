@@ -199,7 +199,7 @@ Suppose that the logit curve in Figure \@ref(fig:fig-logistic-cumulative-distrib
 ```{r fig-logistic-shape-implication, fig.cap= "\\label{fig:fig-logistic-shape-implication}Implication of the sigmoid shape"}
 logit_plot +
   xlab(expression(paste(V[transit], " - ", V[car], sep=""))) + # Label the x axis
-  ylab(expression(paste(P[j]))) + # Label the y axis
+  ylab(expression(paste(P[transit]))) + # Label the y axis
   annotate("segment", x = -3.75, xend = -2.5, y = 0.024, yend = 0.024, colour = "blue", linetype = "solid") +
   annotate("segment", x = -2.5, xend = -2.5, y = 0.024, yend = 0.075, colour = "blue", linetype = "solid") +
   annotate("segment", x = 0, xend = 1.25, y = 0.5, yend = 0.5, colour = "red", linetype = "dashed") +

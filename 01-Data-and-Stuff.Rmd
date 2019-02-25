@@ -61,6 +61,7 @@ In this practice, you will learn about:
 ## Suggested readings
 
 - Grolemund, G., Wickham, H. [-@wickham2016r] R for Data Science, **Chapters 3-5**, O'Reilly Media.
+- Wickham, H. [-@Wickham2016ggplot] ggplot2: Elegant Graphics for Data Analysis, **Chapters 2-3**, Springer: New York.
 
 ## Ways of measuring stuff
 
