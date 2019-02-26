@@ -120,17 +120,17 @@ The argument `varying` lets the function know that the variables in the columns 
 Before estimating an initial model, we need to define the utility functions that we wish to estimate. Since there are five alternatives, we define the following five functions (with heat pump as the reference level):
 $$
 \begin{array}{ccc}
-V_{\text{ec}} = & \beta_{ec} & + \beta_1\text{ic.ec}\\
+V_{\text{ec}} = & 0 & + \beta_1\text{ic.ec}\\
 V_{\text{er}} = & \beta_{er} & + \beta_1\text{ic.er}\\
 V_{\text{gc}} = & \beta_{gc} & + \beta_1\text{ic.gc}\\
 V_{\text{gr}} = & \beta_{gr} & + \beta_1\text{ic.gr}\\
-V_{\text{hp}} = & 0 & + \beta_1\text{ic.hp}\\
+V_{\text{hp}} = & \beta_{hp} & + \beta_1\text{ic.hp}\\
 \end{array}
 $$
 
-These functions include only the instalation cost of the systems (ic). The `mlogit` function can be used to estimate this model (call this Model 1), using the heat pump system as the reference level:
+These functions include only the instalation cost of the systems (ic). The `mlogit` function can be used to estimate this model (call this Model 1), using the electric central system ("ec") as the reference level:
 ```{r}
-mod1 <- mlogit(depvar ~ ic, H, reflevel = "hp")
+mod1 <- mlogit(depvar ~ ic, H, reflevel = "ec")
 summary(mod1)
 ```
 
@@ -465,17 +465,17 @@ Another interesting question for policy analysis is at what rate are consumers w
 To answer this question, we first need an appropriate choice model, that is, one that includes both installation _and_ annual operation costs. The following utility functions are one possible model specification (with heat pump as the reference level):
 $$
 \begin{array}{ccc}
-V_{\text{ec}} = & \beta_{ec} & + \beta_1\text{ic.ec} + \beta_2\text{oc.ec}\\
+V_{\text{ec}} = & 0 & + \beta_1\text{ic.ec} + \beta_2\text{oc.ec}\\
 V_{\text{er}} = & \beta_{er} & + \beta_1\text{ic.er} + \beta_2\text{oc.er}\\
 V_{\text{gc}} = & \beta_{gc} & + \beta_1\text{ic.gc} + \beta_2\text{oc.gc}\\
 V_{\text{gr}} = & \beta_{gr} & + \beta_1\text{ic.gr} + \beta_2\text{oc.gr}\\
-V_{\text{hp}} = & 0 & + \beta_1\text{ic.hp} + \beta_2\text{oc.hp}\\
+V_{\text{hp}} = & \beta_{hp} & + \beta_1\text{ic.hp} + \beta_2\text{oc.hp}\\
 \end{array}
 $$
 
 The model can be reestimated using these constants. The option `reflevel` is used to select the alternative that will work as reference (call this Model 3):
 ```{r}
-mod3 <- mlogit(depvar ~ ic + oc, H, reflevel = "hp")
+mod3 <- mlogit(depvar ~ ic + oc, H, reflevel = "ec")
 summary(mod3)
 ```
 
@@ -484,7 +484,7 @@ So, how is this model used to understand consumer preferences? Recall that the q
 The coefficients of the model provide useful information. Suppose that we would like to know at what rate consumers would be willing to trade one aspect of the good for another, whithout compromising the utility they derive from it. In effect we would like to know how changes in one attribute relate to changes in the other. In the present case, we want to know how installation costs change with respect to operation costs, while mainting the utility (i.e., the change in utility is zero):
 
 $$
-\partial U = 0 = \beta_1\partial ic + \beta_2\partial oc
+\partial U = 0 = \beta_1\partial ic + \beta_{2}\partial oc
 $$
 
 It follows then that:
