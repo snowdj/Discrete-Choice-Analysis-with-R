@@ -5,17 +5,13 @@ output: html_notebook
 
 # Behavioral insights from choice models {#chapter-5}
 
-> "Men’s actions are the best guides to their thoughts."
+> "Perfectionism means that you try not to leave so much mess to clean up."
 >
-> --- John Locke, An Essay Concerning Human Understanding - Volume I
+> --- Anne Lamott, Bird by Bird: Some Instructions on Writing and Life
 
-> "Prediction is not proof."
+> "Perfection’s unattainable but it isn’t unapproachable."
 >
-> --- King and Kraemer, Models, facts, and the policy process: the political ecology of estimated truth
-
-> "Human behavior is incredibly pliable, plastic."
->
-> --- Philip Zimbardo
+> --- Peter Watts, Blindsight
 
 ## Inferring and forecasting behavior
 
@@ -48,9 +44,8 @@ If you are working with the Notebook version of the document, you can run the co
 In this practice, you will learn about:
 
 1. The meaning of the coefficients of a model.
-2. The concept of marginal effects.
 2. The concept of elasticity.
-3. The concept of willingness to pay. 
+3. The concept of rate of substitution. 
 4. How to simulate outcomes.
 
 ## Suggested readings
@@ -108,6 +103,8 @@ summary(Heating[,13:16]) %>%
   kable() %>%
   kable_styling()
 ```
+
+To motivate the discussion, we will begin by estimating 
 
 The dataset is in "wide" form, which means that there is one record per decision making unit (i.e. per household). The package `mlogit` works with data in "long" format, and fortunately (since changing the format of the dataset is a tedious if fairly elementary process), there is a function for changing the format:
 ```{r}
@@ -597,7 +594,7 @@ apply(P, 2, mean)
 
 The new technology is estimated to have a penetration rate of approximately $10.4\%$. Compare to the original proportions of the systems:
 ```{r}
-apply(fitted(mod3, outcome = FALSE), 2, mean)
+apply(fitted(mod1, outcome = FALSE), 2, mean)
 ```
 
 Can you discern the patterns of substitution here? Are these patterns of substitution reasonable?
