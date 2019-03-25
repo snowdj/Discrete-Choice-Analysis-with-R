@@ -61,6 +61,7 @@ In this practice, you will learn about:
 
 - Ben-Akiva, M. Lerman, [-@Benakiva1985discrete] Discrete Choice Analysis: Theory and Applications to Travel Demand, **Chapter 3**, MIT Press.
 - Hensher, D.A., Rose, J.M., Greene, W.H [-@hensher2005applied] Applied Choice Analysis: A Primer, **Chapter 3**, Cambridge University Press.
+- Louviere, J.J., Hensher, D.A., Swait, J.D. [-@Louviere2000stated] Stated Choice Methods: Analysis and Application, **Chapter 1**, Cambridge University Press.
 - Ortuzar JD, Willumsen LG [-@Ortuzar2011modelling] Modelling Transport, Fourth Edition, **Chapter 7**, John Wiley and Sons.
 
 ## Preliminaries
