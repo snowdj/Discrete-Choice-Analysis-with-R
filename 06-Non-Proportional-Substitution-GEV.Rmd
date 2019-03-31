@@ -18,15 +18,10 @@ output: html_notebook
 >
 > --- Winston S. Churchill
 
-## The limits of perfection
 
-The multinomial logit model is the workhorse of discrete choice analysis. As seen in the preceding chapters, it is a model that is intuitive, and moreover, its closed analytical form makes it simple and convenient to estimate. 
+## Preliminaries
 
-When originally developed by Luce [@Luce1959individual; cited in @Train2009discrete], the logit model was based on the axiom of Independence of Irrelevant Alternatives. As discussed in Chapter \@ref(chapter-3), this property of the logit model implies _proportional substitution patterns_. 
-
-To illustrate this, lets revisit the model estimated in Chapter \@ref(chapter-5). This was a model of the choice of heating systems, with five different systems, namely Gas Central (gc), Gas Room (gr), Electric Central (ec), Electric Room (er), and Heat Pump (hp). 
-
-We will begin by loading the packages needed to estimate this model:
+Begin by loading the packages used in this chapter:
 ```{r}
 library(tidyverse)
 library(mlogit)
@@ -42,6 +37,14 @@ The dataset is in "wide" form, which means that there is one record per decision
 ```{r}
 H <- mlogit.data(Heating, shape = "wide", choice = "depvar", varying = c(3:12))
 ```
+
+## The limits of perfection
+
+The multinomial logit model is the workhorse of discrete choice analysis. As seen in the preceding chapters, it is a model that is intuitive, and moreover, its closed analytical form makes it simple and convenient to estimate. 
+
+When originally developed by Luce [@Luce1959individual; cited in @Train2009discrete], the logit model was based on the axiom of Independence of Irrelevant Alternatives. As discussed in Chapter \@ref(chapter-3), this property of the logit model implies _proportional substitution patterns_. 
+
+To illustrate this, lets revisit the model estimated in Chapter \@ref(chapter-5). This was a model of the choice of heating systems, with five different systems, namely Gas Central (gc), Gas Room (gr), Electric Central (ec), Electric Room (er), and Heat Pump (hp). 
 
 Now we are ready to estimate a multinomial logit model (we called this Model 3 in Chapter \@ref(chapter-3)):
 ```{r}
@@ -185,16 +188,6 @@ In this practice, you will learn about:
 - Louviere, J.J., Hensher, D.A., Swait, J.D. [-@Louviere2000stated] Stated Choice Methods: Analysis and Application, **Chapter 6**, Cambridge University Press.
 - Ortuzar JD, Willumsen LG [-@Ortuzar2011modelling] Modelling Transport, Fourth Edition, **Chapter 2, pp. 43-44 and **, John Wiley and Sons.
 - Train [-@Train2009discrete] Discrete Choice Methods with Simulation, Second Edition, **Chapter 4**, Cambridge University Press.
-
-## Preliminaries
-
-Load the packages used in this section:
-```{r}
-library(tidyverse)
-library(evd)
-library(mlogit)
-library(kableExtra)
-```
 
 ## Generalized Extreme Value models: a recipe for deriving discrete choice models
 

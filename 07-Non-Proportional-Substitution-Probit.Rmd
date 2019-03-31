@@ -13,35 +13,6 @@ output: html_notebook
 >
 > --- Peter Watts, Blindsight
 
-## More flexible substitution patterns
-
-**NOTE** This chapter is work in progress and is not yet complete.
-
-In Chapter \@ref(chapter-6) the topic of non-proportional substitution was discussed, and a method for deriving logit models using the Generalized Extreme Value method was presented. In this chapter, an alternative model for more flexible substitution patterns is introduced. This model is based on the use of the normal distribution for the random utility, instead of the extreme value distribution. The model is called _multinomial probit_ and can be used to represent arbitrary substitution patterns. On the downside, the model is technically and computationally more demanding.
-
-## How to use this note
-
-Remember that the source for the document you are reading is an R Notebook. Throughout the notes, you will find examples of code in segments of text called _chunks_. This is an example of a chunk:
-```{r}
-print("If you are always trying to be normal, you will never know how amazing you can be.")
-```
-
-If you are working with the Notebook version of the document, you can run the code by clicking the 'play' icon on the top right corner of the chunk. If you are reading the web-book version of the document, you will often see that the code has already been executed. You can still try it by copying and pasting into your R or RStudio console.
-
-## Learning objectives
-
-In this practice, you will learn about:
-
-1. The probit model.
-2. Identification of parameters.
-3. Estimation of the model.
-
-## Suggested readings
-
-- Ben-Akiva, M. Lerman, [-@Benakiva1985discrete] Discrete Choice Analysis: Theory and Applications to Travel Demand, **Chapter 5, pp. 128-129**, MIT Press.
-- Ortuzar JD, Willumsen LG [-@Ortuzar2011modelling] Modelling Transport, Fourth Edition, **Chapter 7, pp. 248-250**, John Wiley and Sons.
-- Train [-@Train2009discrete] Discrete Choice Methods with Simulation, Second Edition, **Chapter 5**, Cambridge University Press.
-
 ## Preliminaries
 
 Load the packages used in this section:
@@ -70,6 +41,35 @@ This is the same dataset used in the preceding chapter with five heating systems
 - Heat Pump (hp)
 
 This dataset was used to illustrate the nested logit model. The results before suggested that there was a strong correlation among central systems and room-based systems, and therefore a nested logit model was an improvement over the multinomial logit model.
+
+## More flexible substitution patterns
+
+**NOTE** This chapter is work in progress and is not yet complete.
+
+In Chapter \@ref(chapter-6) the topic of non-proportional substitution was discussed, and a method for deriving logit models using the Generalized Extreme Value method was presented. In this chapter, an alternative model for more flexible substitution patterns is introduced. This model is based on the use of the normal distribution for the random utility, instead of the extreme value distribution. The model is called _multinomial probit_ and can be used to represent arbitrary substitution patterns. On the downside, the model is technically and computationally more demanding.
+
+## How to use this note
+
+Remember that the source for the document you are reading is an R Notebook. Throughout the notes, you will find examples of code in segments of text called _chunks_. This is an example of a chunk:
+```{r}
+print("If you are always trying to be normal, you will never know how amazing you can be.")
+```
+
+If you are working with the Notebook version of the document, you can run the code by clicking the 'play' icon on the top right corner of the chunk. If you are reading the web-book version of the document, you will often see that the code has already been executed. You can still try it by copying and pasting into your R or RStudio console.
+
+## Learning objectives
+
+In this practice, you will learn about:
+
+1. The probit model.
+2. Identification of parameters.
+3. Estimation of the model.
+
+## Suggested readings
+
+- Ben-Akiva, M. Lerman, [-@Benakiva1985discrete] Discrete Choice Analysis: Theory and Applications to Travel Demand, **Chapter 5, pp. 128-129**, MIT Press.
+- Ortuzar JD, Willumsen LG [-@Ortuzar2011modelling] Modelling Transport, Fourth Edition, **Chapter 7, pp. 248-250**, John Wiley and Sons.
+- Train [-@Train2009discrete] Discrete Choice Methods with Simulation, Second Edition, **Chapter 5**, Cambridge University Press.
 
 ## Probit model
 
