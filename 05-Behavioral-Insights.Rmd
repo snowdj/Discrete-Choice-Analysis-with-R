@@ -7,7 +7,7 @@ output: html_notebook
 
 > "Men’s actions are the best guides to their thoughts."
 >
-> --- John Locke, An Essay Concerning Human Understanding - Volume I
+> --- John Locke, An Essay Concerning - Volume I
 
 > "Prediction is not proof."
 >
