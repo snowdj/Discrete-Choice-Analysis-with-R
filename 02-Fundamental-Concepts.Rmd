@@ -144,7 +144,7 @@ $$
 
 In other words, the probability of doing nothing equals the probability that the utility of doing nothing is greater than the utility of buying a new phone. After rearranging things, this is equivalent to:
 $$
-P_{\text{Do-Nothing}} = P(V_{\text{Do-Nothing}} - V_{\text{New-Phone}} < \epsilon_{\text{New-Phone}} - \epsilon_{\text{Do-Nothing}})
+P_{\text{Do-Nothing}} = P(V_{\text{Do-Nothing}} - V_{\text{New-Phone}} > \epsilon_{\text{New-Phone}} - \epsilon_{\text{Do-Nothing}})
 $$
 
 The expression above is the foundation of random utility modelling. Before we make more progress, however, we have to answer an important question.
