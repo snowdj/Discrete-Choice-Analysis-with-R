@@ -22,6 +22,7 @@ In this reading, you will learn:
 ##	R: The Open Statistical Computing Project
 
 ### What is R?
+TEST
 
 R is an open-source language for statistical computing. It was created by Ross Ihaka and Robert Gentleman at the University of Auckland, in New Zealand, as a way to offer their students an accessible, no-cost tool for their courses. R is now maintained by the R Development Core Team, and developed by hundreds of contributors around the globe. R is an attractive alternative to other software applications for data analysis (e.g., Microsoft Excel, STATA) due to its open-source character (i.e., it is free), its flexibility, and large and dedicated user community, which means if there’s something you want to do (for instance, linear regression), it is very likely that someone has already developed functionality for it in R.
 
