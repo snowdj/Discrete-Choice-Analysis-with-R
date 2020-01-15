@@ -35,18 +35,18 @@ knitr::include_graphics(rep("01-Figure-1.jpg"))
 
 In the case of mathematical/statistical models, the raw materials are data; the tools are descriptive statistics and statistical plots, and various forms of regression analysis; and the technical expertise is the ability of the modeler to select tools that are appropriate to the data, and to convince the data to "speak": in other words, to extract information from the data. As Moran said in the aphorism quoted at the top of this section: you can have data without information, but no information without data. Technical mastery is the degree to which a modeller can obtain information from data that is useful, accurate, and precise, to the extent that the raw materials permit.
 
-Before moving on to the technical skills required for modeling, it is important to understand the raw materials and the tools. The objective of this note is to introduce some important concerning data and data manipulation, and some useful tools.
+Before moving on to the technical skills required for modeling, it is important to understand the raw materials and the tools. The objective of this note is to introduce some important concepts concerning data and data manipulation, and some useful tools.
 
 ## How to use this note
 
-The source for the document you are reading is an R Notebook. Notebooks are a form "literate programming", a style of document that uses code to illustrate a discussion, as opposed to the traditional programming style that uses natural language to discuss/document the code. It flips around the usual technical writing approach to make it more intuitive and accessible. 
+The source for the document you are reading is an R Notebook. Notebooks are a form [_literate programming_](https://en.wikipedia.org/wiki/Literate_programming), a style of document that uses code to illustrate a discussion, as opposed to the traditional programming style that uses natural language to discuss/document the code. It flips around the usual technical writing approach to make it more intuitive and accessible. 
 
 Throughout the notes, you will find examples of code in segments of text called _chunks_. This is an example of a chunk:
 ```{r}
 print("Hello, Discrete Choice Analysis!")
 ```
 
-If you are working with the Notebook version of the document, you can run the code by clicking the 'play' icon on the top right corner of the chunk. If you are reading the web-book version of the document, you will often see that the code has already been executed. You can still try it by copying and pasting into your R or RStudio console. Whichever way you are working, you might want to give it a try now! You will see that the chunk of code above instructed R (and trough R the computer) to `print` (or display on the screen) some text.
+If you are working with the Notebook version of the document, you can run the code by clicking the 'play' icon on the top right corner of the chunk. If you are reading the web-book version of the document, you will often see that the code has already been executed. You can still try it by copying and pasting into your `R` or RStudio console. Whichever way you are working, you might want to give it a try now! You will see that the chunk of code above instructed `R` (and trough `R` the computer) to `print` (or display on the screen) some text.
 
 ## Learning objectives
 
@@ -71,7 +71,7 @@ Previously we said that data are the raw material for modeling, but we did not s
 
 As an aside, it is interesting to note that Tukey's classic Exploratory Data Analysis [@Tuckey1977] does not define 'data' in the glossary!
 
-Measurement theory is a branch of mathematics concerned with observing the _facts_ about something. It is important to note that measurements are not the same as the thing being measured; however, we would like the measurements to be a reasonably close approximation of the thing being measured - otherwise the measurements might be pretty useless, an inadequate way to learn anything valuable from the thing we are measuring.
+Measurement theory is a branch of mathematics concerned with observing and recording the _facts_ about something. It is important to note that measurements are not the same as the thing being measured; however, we would like the measurements to be a reasonably close approximation of the thing being measured - with "reasonable" in this case meaning that reasonable people can agree that the measurements are a close approximation of the thing being measured (measurement theory breaks down in the face of unreasonable people). If this is not the case, the measurements obtained might be pretty useless, and an inadequate way to learn anything valuable from the thing we are measuring.
 
 One fundamental contribution of the scientific method has been to produce standardized ways of measuring things. How would you measure the following things?
 
@@ -80,7 +80,7 @@ One fundamental contribution of the scientific method has been to produce standa
 - The length of a trip.
 - Blood donations.
 - Different brands of peanut butter.
-- The value of two bedroom apartment.
+- The value of a two bedroom apartment.
 - Someone's opinion regarding taxes.
 
 Generally, there are multiple ways of measuring something, but not all of them are necessarily appropriate, partly because the scales of measurement may result in some loss of information. The interpretation of a measurement, as well, depends on what the scale is.
@@ -89,26 +89,26 @@ Two broad scales of measurement are as follows:
 
 ### Categorical
 
-Categorical measurements assign a label or category to the thing being measured. For example, a way to measure different brands of peanut butter could be to measure their sugar content, their fat content, their consistency, and so on, and in this way describe what makes each brand unique. A different way to do this would be to label one brand "Spooky" and another "Peter's". This has the effect of reducing a lot of information to a much simpler category. Is this loss of information inappropriate? Well, it really depends on what is the intended use of data! Categorical measurements are interesting because they may tell us something about the power of brands!
+Categorical measurements assign a label or category to the thing being measured. For example, a way to measure different brands of peanut butter could be to measure their sugar content, their fat content, their consistency, and so on, and in this way describe what makes each brand unique. A different way to do this would be to label one brand "Spooky" and another "Peter's". This has the effect of reducing a large amount of information to a much simpler category. Is this loss of information inappropriate? Well, it really depends on what is the intended use of data! Categorical measurements are interesting because they may tell us something about the power of brands!
 
 Within the class of categorical variables there are two distinct scales of measurement:
 
-- Nominal scale. When the categories do not follow a natural order. For example, there is no reason to say that "Spooky" brand precedes "Peter's" or vice versa. Similarly, when measuring modes of travel "walking" is not intrinsically higher or lower or better or worse than "cycling" or "riding bus".
+- Nominal scale. When the categories do not follow a natural order. For example, there is no reason to say that the "Spooky" brand precedes "Peter's" or vice versa. Similarly, when measuring modes of travel "walking" is not intrinsically higher or lower or better or worse than "cycling" or "riding bus".
 
-- Ordinal scale. When the categories follow a natural or logical sequence. A common way of measuring opinions is by means of the [Likert scale](https://en.wikipedia.org/wiki/Likert_scale), which classifies responses for instance as "strongly disagree", "disagree", "neutral", "agree", "strongly agree". In this case, it is sensible to order the responses, since "strongly agree" is probably closer to "agree" than to "strongly disagree". Responses of this type are often represented by numbers, say, from 1 to 5. It is a mistake to treat the measurements as numbers instead of lables. When treated as numbers there is a temptation to thing of the difference between 4 and 5 and the difference between 3 and 4 as being equivalent, when in fact the strength of disagreement could be stronger than the strength of agreement. In other words, the interval between "strongly disagree" and "disagree" may not be the same as "agree" and "strongly agree". With ordinal scales we do not know that, all that we know is that they measure a different opinion.
+- Ordinal scale. When the categories follow a natural or logical sequence. A common way of measuring opinions is by means of the [Likert scale](https://en.wikipedia.org/wiki/Likert_scale), which classifies responses for instance as "strongly disagree", "disagree", "neutral", "agree", and "strongly agree". In this case, it is sensible to order the responses, since "strongly agree" is probably closer to "agree" than to "strongly disagree". Responses of this type are often represented by numbers, say, from 1 to 5, however, it is a mistake to treat the measurements as numbers instead of labels. When treated as numbers there is a temptation to think of the difference between 4 and 5 and the difference between 3 and 4 as being equivalent, when in fact the strength of disagreement could be stronger than the strength of agreement (or vice versa). In other words, the interval between "strongly disagree" and "disagree" may not be the same as "agree" and "strongly agree". With ordinal scales we do not know that, all that we know is that they measure a different opinion.
 
 Sometimes, different measurement scales might represent different behavioral mechanisms, as Bhat and Pulugurta discuss in their comparison of categorical and ordinal measurements for vehicle ownership [@Bhat1998comparison].
 
 ### Quantitative
 
-Quantitative measurements assign a number to an attribute, and the number quantifies the presence of the attribute. Within this class of variables, there are also two ways of measuring things.
+Quantitative measurements assign a number to an attribute, and the number quantifies the presence, strength, or intensity of the attribute. Within this class of variables, there are also two ways of measuring things.
 
 - Interval scale. A quantity can be assigned to an attribute, the values follow an order, and their differences can be computed and remain constant. Temperature is typically measured in interval scale. The difference between $10\,^{\circ}\mathrm{C}$ and $11\,^{\circ}\mathrm{C}$ is the same as the difference between $25\,^{\circ}\mathrm{C}$
 and $26\,^{\circ}\mathrm{C}$. The intervals are meaningful. However, $0\,^{\circ}\mathrm{C}$ does not imply the absence of temperature! Which is why measurements in Celsius and Farenheit do not coincide at zero. The lack of a natural zero for these scales means that the _ratios_ between two values are not meaningful: $4\,^{\circ}\mathrm{C}$
 is not twice as hot as $2\,^{\circ}\mathrm{C}$, and $-12\,^{\circ}\mathrm{C}$
 is not four times as cold as $-3\,^{\circ}\mathrm{C}$.
 
-- Ratio scale. When there is an absolute value of zero to the thing being measured (to indicate absence!), attributes can be measured in a ratio scale. This combines the features of the previous scales of measurement: a number is esentially a label that follows a logical order and with differences that are meaningful. In addition to that, the ratios of variables are meaningful. For example, twenty dollars are twice as valuable as ten, and zero is the absence of value. Weight is a way of measuring mass, and zero is the absence of mass. Two hundred kilograms is twice as much as one hundred kilograms.
+- Ratio scale. When there is an absolute value of zero to the thing being measured (to indicate absence!), attributes can be measured in a ratio scale. This combines the features of the previous scales of measurement: a number is esentially a label that follows a logical order and with differences that are meaningful. In addition to that, the ratios of variables are meaningful. For example, twenty dollars are twice as valuable as ten, and zero is the absence of value. Weight is a way of measuring mass, and zero is the absence of mass. Two hundred kilograms is twice as much mass as one hundred kilograms.
 
 It is important to understand the different scales of measurement to be able to choose the appropriate tools for each. More on this below. But first, lets bring some actual data to play with.
 
@@ -131,7 +131,7 @@ install.packages("tidyverse")
 The function `install.packages` retrieves packages from the [Comprehensive R Archive Network](https://cran.r-project.org/), or CRAN for short. CRAN is a collection of sites (accessible via the internet) that carry identical materials for distribution for R.
 
 Installing a package is similar to acquiring a book for your library. The book is there, but if you want to use it, you need to bring it to your workspace, so to speak. The function for retrieving a package from the library is naturally enough `library()`. For the moment, we need the following packages. If you have not done so, take a moment to install them, as illustrated in the previous chunk.
-```{r}
+```{r message=FALSE}
 library(tidyverse)
 library(readr)
 #library(caret)
@@ -159,7 +159,7 @@ This function will print a set of summary statistics for the variables in the ta
 
 For example, the variable `choice` measures the use of one mode of transportation. There are four values in this scale: 1 through 4, with each indicating one of "Cycle", "Walk", "Car", or "HSR" (the local transit agency in Hamilton, ON, Canada, where these data were collected). Check the results of the summary. What does it mean to say that the mean of choice is 2.618? Does this number make sense?
 
-## Data Classes in R
+## Data Classes in `R`
 
 To understand why 2.618 of mode of transportation is not an appropriate summary measure for the variable `mode`, we need to know that R can work with different data classes, which include the following:
 
@@ -235,7 +235,7 @@ Indexing is useful to subset data selectively. For example, we know that travel 
 ```{r}
 time.Cycle.clean <- mc_mode_choice$timecycle[mc_mode_choice$timecycle != 100000]
 ```
-where `!=` is R for _not_. In other words, "find all values _not_ 100000, and retrieve them".
+where `!=` is `R` for _not_. In other words, "find all values _not_ 100000, and retrieve them".
 
 The result of this is a numeric object:
 ```{r}
