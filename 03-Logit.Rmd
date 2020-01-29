@@ -13,20 +13,20 @@ output: html_notebook
 
 In Chapter \@ref(chapter-2) a conceptual framework was described to model choice-making behavior. This framework is based on the economic notion of _utility_, basically that which decision-makers wish to maximize when making choices. The concept of utility has many flaws - key among them that it is not directly observable. If utility could be measured directly by an external observer (or analyst), behavior would seem deterministic. However, unlike Laplace's Demon, an external observer with only human capabilities has limited knowledge of the conditions under which choices are made, if for no other reason that she cannot possibly know the frame of mind of the decision-maker at the moment when choices are made.
 
-A way to implement the conceptual framework unders such conditions involved an acknowledgement that although the decision-maker tries to maximize his utility, some part of it will look random to the observer - therefore the term _random utility modelling_. This allows the analyst to make probabilitistic statements about the behavior of decision-makers. Accordingly, the analyst does not know with certainty the outcome of a choice process, but can quantify her uncertainty in a fairly precise way.
+A way to implement the conceptual framework unders such conditions involved an acknowledgement that although the decision-maker tries to maximize their utility, some part of it will look random to the observer - therefore the term _random utility modelling_. This allows the analyst to make probabilitistic statements about the behavior of decision-makers. Accordingly, the analyst does not know with certainty the outcome of a choice process, but can quantify uncertainty in a fairly precise way.
 
-Based on these concepts, Chapter \@ref(chapter-2) concluded by deriving a simple model for discrete choices, namely the lineary probability model [see @Benakiva1985discrete, pp. 66-68]. This model is useful for illustrative purposes. However, it suffers from an important limitation: the linear probabilities are a stepwise function, which makes their mathematical treatment unfun, and also imply that certain outcome are certain (i.e., it can return probabilities of exactly one or exactly zero). This would preclude certain behaviors, which seems a somewhat arrogant thing to do on the part of the analyst. A better approach would be to allow any behavior, but assign very small probabilities to more extreme choices.
+Based on these concepts, Chapter \@ref(chapter-2) concluded by deriving a simple model for discrete choices, namely the linear probability model [see @Benakiva1985discrete, pp. 66-68]. This model is useful for illustrative purposes. However, it suffers from an important limitation: the linear probabilities are a stepwise function, which makes their mathematical treatment unfun, and also imply that certain outcomes are certain (i.e., it can return probabilities of exactly one or exactly zero). This would preclude certain behaviors, which is a somewhat arrogant assumption on the part of the analyst. A better approach would be to allow any behavior, but instead assign very small probabilities to more extreme choices.
 
-In this chapter we will revisit those random utility terms to derive an alternative to the linear probability model. This will be the _logit_ model, one of the most popular models in discrete choice analysis for reasons that will be discussed below.
+In this chapter we will revisit the random utility terms in the probabilistic statement concerning choices, and we will derive an alternative to the linear probability model. This will be the _logit_ model, one of the most popular models in discrete choice analysis for reasons that will be discussed below.
 
 ## How to use this note
 
 Remember that the source for the document you are reading is an R Notebook. Throughout the notes, you will find examples of code in segments of text called _chunks_. This is an example of a chunk:
 ```{r}
-print("Hello, Dr. Train")
+print("Hello, Prof. Train")
 ```
 
-If you are working with the Notebook version of the document, you can run the code by clicking the 'play' icon on the top right corner of the chunk. If you are reading the web-book version of the document, you will often see that the code has already been executed. You can still try it by copying and pasting into your R or RStudio console.
+If you are working with the Notebook version of the document, you can run the code by clicking the 'play' icon on the top right corner of the chunk. If you are reading the web-book version of the document, you will often see that the code has already been executed. You can still try it by copying and pasting into your `R` or RStudio console.
 
 ## Learning objectives
 
@@ -55,11 +55,13 @@ library(evd)
 
 ## Once again those random terms
 
-Recall that in order to implement the probabilitistic statement at the heart of a discrete choice model requires the analyst to make assumptions about the random utility terms. Previously, a number of probability distributions were explored, and one in particular (the uniform distribution) was used to derive a simple discrete choice model. But, is the uniform distribution an appropriate choice for the purpose of modeling the random utility?
+Recall that implementation of the probabilitistic statement at the heart of a discrete choice model requires the analyst to make assumptions about the random utility terms. Previously, a number of probability distributions were explored, and one in particular (the uniform distribution) was used to derive a simple discrete choice model. But, is the uniform distribution an appropriate choice for the purpose of modeling the random utility?
 
-The uniform distribution (and some of the other stepwise distributions seen in Chapter \@ref(chapter-2)) are useful to illustrate the concept of probability, and more specifically the need to calculate the area under the curve of the distribution. The area under the curve of the uniform distribution is simply the area of a rectangle, which makes this extremely simple. On the other hand, it precludes certain outcomes, which limits its practical usefulness.
+The uniform distribution (and some of the other stepwise distributions seen in Chapter \@ref(chapter-2)) are useful to illustrate the concept of probability, and more specifically the need to calculate the area under the curve of the distribution. The area under the curve of the uniform distribution is simply the area of a rectangle, which makes this task extremely simple since it requires only the formula for the area of a rectangle. On the other hand, it precludes certain outcomes, which limits its practical usefulness.
 
-The reality is that, since the utility is in principle unobservable, there is little theoretical support for any specific distribution of the random utility terms. For this reason, the choice of distribution tends to be very pragmatic, particularly attending the convenience for estimation purposes, i.e., retrieving parameters from a sample of observations. The parameters include the parameters used in the systematic utility function $U_{ij}$ (more on this later), as well as any parameters needed for the distribution itself. For instance, the uniform distribution is defined by two parameters, $a$ and $b$:
+The reality is that, since the utility is in principle unobservable, there is little theoretical support for any specific distribution of the random utility terms. For this reason, the choice of a specific distribution tends to be very pragmatic, and usually pays attention to its convenience for estimation purposes, i.e., retrieving parameters from a sample of observations. Another consideration is the ability of the distribution to represent different types of behavior, as will be seen. 
+
+The parameters that need to be retrieved via estimation include the parameters used in the systematic utility function $U_{ij}$ (more on this later), as well as any other parameters needed by the distribution itself. For instance, the uniform distribution is defined by two parameters, $a$ and $b$:
 $$
 f(x) = \left\{
         \begin{array}{lc}
@@ -70,9 +72,9 @@ f(x) = \left\{
     \right.
 $$
 
-These parameters define the _dispersion_ of the distribution. The dispersion controls the shape of the distribution, in this case how wide or narrow it is. The greater the difference between $a$ and $b$ the greater the range of values with non-zero probability, but the lower the probability for a constant interval of values. These two parameters also determine the _center_ of the distribution. In this way, the uniform distribution is centered at $\frac{a-b}{2}$. Other distributions also have parameters that determine their shape and position.
+These parameters define the _dispersion_ of the distribution. The dispersion controls the shape of the distribution, in this case how wide or narrow it is. The greater the difference between $a$ and $b$ the greater the range of values with non-zero probability, but the lower the probability for any given constant interval of values. These two parameters also determine the _center_ of the distribution (i.e., the mid-point of the rectangle). In this way, the uniform distribution is centered at $\frac{a-b}{2}$. Other distributions also have parameters that determine their shape and position.
 
-A convenient choice of distribution is the Extreme Value type I (EV Type I) probability distribution function. This  function is defined as:
+A convenient choice of distribution is the Extreme Value type I (EV Type I) probability distribution function. This function is defined as:
 $$
 f(x; \mu,\sigma) = e^{-(x + e^{-(x-\mu)/\sigma})}
 $$
@@ -86,7 +88,7 @@ The shape of this distribution is shown in Figure \@ref(fig:fig-evi-distribution
 mu <- 0
 sigma <- 1
 
-# Create a data frame for plotting
+# Create a data frame for plotting; the arguments `from` and `to` define the range for plotting
 df <- data.frame(x =seq(from = -5, to = 5, by = 0.01)) %>% mutate(y = dgumbel(x, loc = mu, scale = sigma))
 
 # Plot
@@ -100,17 +102,17 @@ ggplot(data = df, aes(x, y)) +
 
 If you are working with the R Notebook, you can try changing the parameters to see how the function behaves (remember to adjust the limits if you change the center of the distribution!).
 
-The EV Type I has a very interesting property: the difference of two EV Type I distributions follows the logistic distribution. In other words, if $X \sim \text{EVI}(\alpha_Y,\sigma)$ and $Z \sim \text{EVI}(\alpha_Z,\sigma)$, then:
+The EV Type I has a very interesting property: the difference of two EV Type I distributions follows the logistic distribution. In other words, if we let $X \sim \text{EVI}(\alpha_Y,\sigma)$ and $Z \sim \text{EVI}(\alpha_Z,\sigma)$, then:
 $$
 X - Y \sim \text{Logistic}(\alpha_X - \alpha_Y,\sigma)
 $$
 
-If we define the difference of the random utility terms as $\epsilon_n = \epsilon_j - \epsilon_k$, the logistic distribution, in turn, is defined as follows:
+Accordingly, we can define the difference of the random utility terms as $\epsilon_n = \epsilon_j - \epsilon_k$ using the logistic distribution. This distribution, in turn, is as follows:
 $$
 f(x; \mu,\sigma) = \frac{e^{-(x-\mu)/\sigma}}{\sigma(1 + e^{-(x-\mu)/\sigma})^2}
 $$
 
-Whereas the EV Type I distribution was not symmetric, the shape of the logistic distribution is. The logistic distribution is, in fact, similar to the normal distribution but it has fatter tails, which means that the probability of extreme values is higher. This is illustrated in Figure \@ref(fig:fig-logistic-normal-distribution):
+Wher the EV Type I distribution was not symmetric, the shape of the logistic distribution is. The logistic distribution is, in fact, similar to the normal distribution but it has fatter tails, which means that for identical parameters the probability of extreme values is higher. This is illustrated in Figure \@ref(fig:fig-logistic-normal-distribution):
 
 ```{r fig-logistic-normal-distribution, fig.cap= "\\label{fig:fig-logistic-normal-distribution}Comparison of the logistic (blue) and normal (grey) distributions"}
 # Define parameters for the distribution
@@ -152,7 +154,7 @@ The above is called the _logit probability_ and the resulting model is called th
 mu <- 0
 sigma <- 1
 
-# Define an upper limit for calculating the probability
+# Define an upper limit for calculating the probability; This equivalent to V_j - V_k. Negative values represent V_j < V_k, and positive values are V_j > V_k; when V_j = V_k, then X = 0:
 X <- -1
 
 # Create data frames for plotting
@@ -213,7 +215,7 @@ The implication is that when the penetration of an alternative (think transit, h
 
 Figure \@ref(fig:fig-logistic-distribution) above was created assuming that $\mu=0$ and $\sigma=1$. Can we really set these values in such an arbitrary fashion? The answer is no and yes.
 
-In the case of the centering parameter $\mu$, setting it arbitrarily to zero is not appropriate. The reason is that we can think of this parameter as being key to calculating the difference between the systematic utilities. As seen above, the logit probability is:
+In the case of the centering parameter $\mu$, setting it arbitrarily to zero is not appropriate. The reason is that we this parameter is key to calculating the difference between the systematic utilities of alternatives. As seen above, the logit probability is:
 $$
 P_j = P(V_j - V_k \le \epsilon_n) = \frac{1}{1 + e^{-(V_j-V_k-\mu)/\sigma}}
 $$
@@ -233,7 +235,7 @@ $$
 P_j = P(V_j - V^*_k \le \epsilon_n) = \frac{1}{1 + e^{-(V_j-V^*_k)/\sigma}}
 $$
 
-The difference in other words depends on the value of $\mu$. When $\mu$ is a large positive number, the effect is to increase the utility of alternative $k$ (or conversely, since it would enter with a negative sign in $V^*_j$, it would decrease the utility of alternative $j$). When $\mu$ is a large negative number, the effect is to _increase_ the utility of $j$ - or alternatively to reduce the utility of $k$. For this reason we do not want to arbitrarily set the value of $\mu$ to zero, because this parameter contains information about the relative differences between $V_j$ and $V_k$. The utility function that does not contain the centering parameter $\mu$ is called the _reference_ function.
+The difference in other words depends on the value of $\mu$. When $\mu$ is a large positive number, the effect is to increase the utility of alternative $k$ (or conversely, since it would enter with a negative sign in $V^*_j$, it would decrease the utility of alternative $j$). When $\mu$ is a large negative number, the effect is to _increase_ the utility of $j$ - or alternatively to reduce the utility of $k$. For this reason we do not want to arbitrarily set the value of $\mu$ to zero, because this parameter contains information about the relative _systematic_ differences between $V_j$ and $V_k$. The utility function that does not contain the centering parameter $\mu$ is called the _reference_ function.
 
 For simplicity of presentation, I will drop the notation $V^*$ and will assume henceforth that one of the utility functions has absorbed parameter $\mu$.
 
@@ -247,7 +249,7 @@ $$
 \theta(V_j - V_k) = \theta V_j - \theta V_k 
 $$
 
-In other words, mutliplying two quantities by a positive constant changes the cardinality of the difference. If you are working with the R Notebook, you might want to try changing the value of `theta` below, keeping in mind that the value must be **greater than zero**:
+In other words, mutliplying two quantities by a positive constant changes the cardinality of the difference. If you are working with the R Notebook, you might want to try changing the value of `theta` below, keeping in mind that the value must be **greater than zero** (the dispersion parameter is never negative):
 ```{r}
 V_j <- -4
 V_k <- 8
@@ -274,14 +276,14 @@ Notice that in this case there are $J-1$ parameters $\mu$ that are absorbed by a
 
 ## Properties of the logit model
 
-The logit model is the workhorse of discrete choice analysis, in good measure because of its closed form which does not require numerical evaluation of the integrals involved in calculating probabilities (i.e., the "area under the curve", although in multinomial situations this actually is a volume under the surface!)
+The logit model is the workhorse of discrete choice analysis, in good measure because its closed form does not require numerical evaluation of the integrals involved in calculating probabilities (i.e., the "area under the curve", although in multinomial situations this actually is a volume under the surface!)
 
 One important property of the logit model is the way it handles substitution patterns. Consider the ratio of odds for any two alternatives according to the multinomial logit model:
 $$
 \frac{P_j}{P_m}=\frac{\frac{e^{V_j}}{\sum_ke^{V_k}}}{\frac{e^{V_m}}{\sum_ke^{V_k}}} =\frac{e^{V_j}}{e^{V_m}} =e^{V_j - V_m}
 $$
 
-As seen, the ratio of the odds of $P_j$ to $P_m$ depends only on the difference in the utilities of alternatives $j$ and $m$ and nothing more. Furthermore, recall that the choice set is by design an exhaustive set of possible alternatives, and therefore the sum of the probabilities over this set is one:
+As seen above, the ratio of the odds of $P_j$ to $P_m$ depends only on the difference in the utilities of alternatives $j$ and $m$ and nothing else. Furthermore, recall that the choice set is by design an exhaustive set of possible alternatives, and therefore the sum of the probabilities over this set is one:
 $$
 P_1 + P_2+\cdots+P_J=1
 $$
@@ -376,7 +378,7 @@ $$
 
 Proportional substitution patterns are a consequence of the lack of correlation among the random utilities. The logit model considers that the alternatives are all independent. However, in this example, this condition is suspect: the two kinds of margarine are more similar between them than either are to butter. Indeed, if consumers choose butter for flavor, lowering the price of one kind of margarine is likely to draw _less_ than proportionally from the probability of choosing butter - and more than proportionally from the probability of the other kind of margarine if, for instance, consumers prefer margarine for health reasons but respond to price changes.
 
-In this case, the correlation between the two kinds of margarine is a consequence of a missing attribute - say flavor, or health, that is necessary to discriminate among the alternatives. In this way, the logit model can be seen as the ideal model - its closed form being a very attractive feature - as long as the systematic utilities are properly and completely specified. When this is not the case, the results can lead to unrealistic and even unreasonable substition patterns. This issue suggests two possible courses of action:
+In this case, the correlation between the two kinds of margarine is a consequence of a missing attribute - say flavor, or health, that is necessary to discriminate among the alternatives. In this way, the logit model can be seen as the ideal model - its closed form is a very attractive feature...as long as the systematic utilities are properly and completely specified. When this is not the case, the results can lead to unrealistic and even unreasonable substition patterns. This issue suggests two possible courses of action:
 
 1. Working to ensure that the systematic utility functions are properly and completely specified.
 2. Modifying the modelling apparatus to accommodate correlations among the random utilities.
