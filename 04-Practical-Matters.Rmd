@@ -100,8 +100,8 @@ $$
               }_{\text{alternative vars. with generic coefficients}}
   \overbrace{\begin{array}{lll}
                  +\delta_1w_{i1} & +0 & +0\\
-                +0 & +\delta_2w_{i1} & +0\\
-                +0 & +0 & +\delta_3w_{i1}\\
+                +0 & +\delta_2w_{i2} & +0\\
+                +0 & +0 & +\delta_3w_{i3}\\
               \end{array}
               }^{\text{alternative vars. with specific coefficients}}
 $$
@@ -119,6 +119,7 @@ $$
 $$
 
 Variables that vary across individuals but not by alternative can be introduced with alternative-specific coefficients:
+
 $$
 \begin{array}{l}
                 V_{i1} =\\
@@ -140,8 +141,8 @@ $$
 
   \overbrace{\begin{array}{lll}
                  +\delta_1w_{i1} & +0 & +0\\
-                +0 & +\delta_2w_{i1} & +0\\
-                +0 & +0 & +\delta_3w_{i1}\\
+                +0 & +\delta_2w_{i2} & +0\\
+                +0 & +0 & +\delta_3w_{i3}\\
               \end{array}
               }^{\text{alternative vars. with specific coefficients}}
   \underbrace{\begin{array}{lll}
@@ -153,6 +154,7 @@ $$
 $$
 
 Following the example above, the differences of utilities are:
+
 $$
 \begin{array}{lll}
     V_{i2}-V_{i1}=&(\mu_2 - 0) & + &\beta_1(x_{i2} - x_{i1}) & + &(\delta_2w_{i2} - \delta_1w_{i1}) & + &(\gamma_2 - 0)z_i\\
@@ -162,6 +164,7 @@ $$
 $$
 
 A different way of introducing individual-level variables is as part of an expansion of some coefficients, for example:
+
 $$
 
 \begin{array}{l}
@@ -183,13 +186,14 @@ $$
               }_{\text{alternative vars. with generic coefficients}}
   \overbrace{\begin{array}{lll}
                  +\delta_1w_{i1} & +0 & +0\\
-                +0 & +\delta_2w_{i1} & +0\\
-                +0 & +0 & +\delta_3w_{i1}\\
+                +0 & +\delta_2w_{i2} & +0\\
+                +0 & +0 & +\delta_3w_{i3}\\
               \end{array}
               }^{\text{alternative vars. with specific coefficients}}
 $$
 
 The above expands to:
+
 $$
 
 \begin{array}{l}
@@ -211,13 +215,14 @@ $$
               }_{\text{alternative vars. with generic coefficients}}
   \overbrace{\begin{array}{lll}
                 +\delta_1w_{i1} & +0 & +0\\
-                +0 & +\delta_2w_{i1} & +0\\
-                +0 & +0 & +\delta_3w_{i1}\\
+                +0 & +\delta_2w_{i2} & +0\\
+                +0 & +0 & +\delta_3w_{i3}\\
               \end{array}
               }^{\text{alternative vars. with specific coefficients}}
 $$
 
 And so the differences in utilities are:
+
 $$
 \begin{array}{lll}
     V_{i2}-V_{i1}=&(\mu_2 - 0) & + &\beta_{11}(x_{i2} - x_{i1}) & + &\beta_{11}(z_ix_{i2} - z_ix_{i1}) & + &(\delta_2w_{i2} - \delta_1w_{i1})\\
@@ -245,6 +250,7 @@ As you can see, the dataframe has been organized in a particular way. Now, inste
 The first step towards developing a choice model is to specify the utility functions for the desired model. The package `mlogit` uses the package `mFormula` to create the functions. This package creates objects that build upon the [`Formula` package](https://CRAN.R-project.org/package=Formula ) for multi-component formulas. As seen above, utility functions can potentially have multiple components, so the functionality to build formulas in `mFormula` and `Formula` is quite useful.
 
 Formulas for the `mlogit` package are defined using three parts:
+
 $$
 \text{choice} \sim \text{alternative specific vars with generic coefficients }|\text{ individual specific vars }|\text{ alternative specific vars with specific coefficients}  
 $$
@@ -408,7 +414,7 @@ where $P_{ij}$ is the probability of decision-maker $i$ selecting alternative $j
 We can explore the behavior of the likelihood function by means of a simple example. Consider a binomial logit mode, that is, a model with only two alternatives in the choice set. The likelihood function of this model is as follows:
 
 $$
-L = \prod_{i=n}^N P_{iA}^{y_{iA}}P_{iB}^{y_{iB}} = 
+L = \prod_{i=n}^N P_{iA}^{y_{iA}}P_{iB}^{y_{iB}} = \prod_{i=n}^N 
     \Bigg(\frac{e^{V_{iA}}}{e^{V_{iA}} + e^{V_{iB}}}\Bigg)^{y_{iA}}
     \Bigg(\frac{e^{V_{iB}}}{e^{V_{iA}} + e^{V_{iB}}}\Bigg)^{y_{iB}}
 $$
@@ -480,7 +486,7 @@ As you can see, that the logit probabilities when all coefficients are zero is $
 Now, we can experiment with the coefficients, by giving them different values as follows (call this "Experiment 2"):
 ```{r}
 mu <- 0.5 # -0.5
-beta <- -1.5 # -0.5
+beta <- -0.5 # -0.5
 
 P1A_2 <- (exp(beta * ts$xiA[1])/(exp(beta * ts$xiA[1]) + exp(mu + beta * ts$xiB[1])))
 P1B_2 <- (exp(mu + beta * ts$xiB[1])/(exp(beta * ts$xiA[1]) + exp(mu + beta * ts$xiB[1])))
@@ -762,7 +768,7 @@ In the present case, the very small $p$-value leads us to reject the null hypoth
 
 ## Exercise
 
-1. In the example in this chapter we estimated the probabilities of choosing different modes by age setting travel time to the in-sample median. Calculate the probability of choosing the modes but now as a function of **travel time**, for ages 17, 20, 23, and 26.
+1. In the example in this chapter we estimated the probabilities of choosing different modes by age setting travel time to the in-sample median. Use `model2` to calculate the probability of choosing the modes but now as a function of **travel time**, for ages 17, 20, 23, and 26.
 
 2. Estimate a model using formula `f3` (call it `model3`). Discuss the output of this model.
 

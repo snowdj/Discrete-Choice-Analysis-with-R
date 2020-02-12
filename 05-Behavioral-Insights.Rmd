@@ -21,16 +21,16 @@ output: html_notebook
 
 In Chapter \@ref(chapter-5) you learned some important practical aspects needed to estimate the logit model. Many of those aspects transfer to other kinds of discrete choice models as well. Now that you have the practical skills to estimate a model, we can take the opportunity to see how the model can be used to infer behavior.
 
-In the preceding chapters we have made the assumption that an observer/analyst cannot know the state of mind of the decision-maker, and that a model is a way to infer the decision-making mechanisms based on what people do (or say they would do - more on this in a latter chapter.) Once this has been achieved, what is a model good for?
+In the preceding chapters we have made the assumption that an observer/analyst cannot know the state of mind of the decision-maker, and that a model is a way to infer the decision-making mechanisms based on what people do (or say they would do - more on this in a later chapter.) Once this has been achieved, what is a model good for?
 
-In addition to providing a plausible description of the decision-making mechanism of interest, a model can be used to examine how behavior _might_ change if the conditions of the decision-making situation changed. McFadden, in one of the seminal papers on discrete choice analysis [see @McFadden1974measurement], is concerned with travel demand forecasting. The basis for this is a model of mode choice that helps to tease out the factors that influence the choice between car and bus as a mode for commuting to work. Once that this model was estimated, McFadden was interested in the level of demand of a new mode, a rail system called BART (Bay Area Rail Transit). This system had not been built yet, and so obtaining estimates of level of demand was an important part of policy analysis. In other words, McFadden was interested in how behavior _might_ change with the introduction of a new mode of transportation. What would be the demand for the new mode at a certain fare? If fares changed? If waiting times for BART were longer or shorter? And so on.
+In addition to providing a plausible description of the decision-making mechanism of interest, a model can be used to examine how behavior _might_ change if the conditions of the decision-making situation changed. McFadden, in one of the seminal papers on discrete choice analysis [see @McFadden1974measurement], was concerned with travel demand forecasting. The basis for forecasting demand was a model of mode choice that helped to tease out the factors that influence the choice between car and bus as a mode for commuting to work. Once that this model was estimated, McFadden was interested in the level of demand of a new mode, a rail system called BART (Bay Area Rail Transit). This system had not been built yet, and so obtaining estimates of level of demand was an important part of policy analysis. In other words, McFadden was interested in how behavior _might_ change with the introduction of a new mode of transportation. What would be the demand for the new mode at a certain fare? If fares changed? If waiting times for BART were longer or shorter? And so on.
 
 You will hopefully become familiar with this process:
 
 1. Estimate and select a plausible model for the behavior of interest.
 2. Analyze scenarios: what would happen if?
 
-This process is valuable in several ways [@King1993models]. **First**, it helps to clarify issues that are of policy interest (p. 365). Modelers need to document their assumptions, specification choices, and so on, resulting in a systematic approach of simplification (and remember, all models are wrong, but some are useful). **Secondly**, the modeling process and subsequently the use of models, help to enforce discipline in analysis and discourse. The behavior of models is to some extent limited by their mechanics, and the results should reflect this. For example, incremental changes in the inputs should result in plausible changes in the predictions. Making predictions outside of the calibration range of the model (beyond the range of values of variables used to estimate the model) will likely result in predictions that are implausibly out of bounds.  As King and Kraemer note [-@King1993models] "the results of radical changes are unlikely to be predicted accurately by models based on the performance under the status quo" (p. 365).And models when used to analyze scenarios, provide cautionary advice on _what not to do_ by revealing the possible consequences of a bad policy. In this way, models can help inform policy-makers about the range of possible outcomes and whether these outcomes are in a sense in some "acceptable range" [@King1993models, pp. 365-366]. In other words, models help to probe the limits of the plasticity of human behavior.
+This process is valuable in several ways [@King1993models]. **First**, it helps to clarify issues that are of policy interest (p. 365). Modelers need to document their assumptions, specification choices, and so on, resulting in a systematic approach of simplification (and remember, all models are wrong, but some are useful). **Secondly**, the modeling process and subsequently the use of models, help to enforce discipline in analysis and discourse. The behavior of models is to some extent limited by their mechanics, and the results should reflect this. For example, incremental changes in the inputs should result in plausible changes in the predictions. Making predictions outside of the calibration range of the model (beyond the range of values of variables used to estimate the model) will likely result in predictions that are implausibly out of bounds. As King and Kraemer note [-@King1993models] "the results of radical changes are unlikely to be predicted accurately by models based on the performance under the status quo" (p. 365). And models, when used to analyze scenarios, provide cautionary advice on _what not to do_ by revealing the possible consequences of a bad intervation or policy. In this way, models can help inform policy-makers about the range of possible outcomes and whether these outcomes are in a sense in some "acceptable range" [@King1993models, pp. 365-366]. In other words, models help to probe the limits of the plasticity of human behavior.
 
 We will explore the preceding issues in this chapter, looking at different ways to derive behavioral insights based on models of choices.
 
@@ -41,7 +41,7 @@ Remember that the source for the document you are reading is an R Notebook. Thro
 print("Are these the shadows of the things that Will be, or are they shadows of the things that May be only?")
 ```
 
-If you are working with the Notebook version of the document, you can run the code by clicking the 'play' icon on the top right corner of the chunk. If you are reading the web-book version of the document, you will often see that the code has already been executed. You can still try it by copying and pasting into your R or RStudio console.
+If you are working with the Notebook version of the document, you can run the code by clicking the 'play' icon on the top right corner of the chunk. If you are reading the web-book version of the document, you will often see that the code has already been executed. You can still try it by copying and pasting into your `R` or RStudio console.
 
 ## Learning objectives
 
@@ -64,7 +64,7 @@ In this practice, you will learn about:
 ## Preliminaries
 
 Load the packages used in this section:
-```{r}
+```{r message = FALSE}
 library(tidyverse)
 library(evd)
 library(mlogit)
@@ -109,12 +109,12 @@ summary(Heating[,13:16]) %>%
   kable_styling()
 ```
 
-The dataset is in "wide" form, which means that there is one record per decision making unit (i.e. per household). The package `mlogit` works with data in "long" format, and fortunately (since changing the format of the dataset is a tedious if fairly elementary process), there is a function for changing the format:
+The dataset is in "wide" form, which means that there is one record per decision making unit (i.e. per household). The package `mlogit` works with data in "long" format, but I find it easier to work with the dataframes in their wide format for the purpose of post-estimation analysis. Fortunately (since changing the format of a dataset is a tedious if fairly elementary process), there is a function for changing the format. We will call this function when required:
 ```{r}
 H <- mlogit.data(Heating, shape = "wide", choice = "depvar", varying = c(3:12))
 ```
 
-The argument `varying` lets the function know that the variables in the columns 3 through 13 in the dataframe are alternative-specific, and therefore vary across utility functions. Once that the format of the table has been changed from "wide" to "long", the number of rows changes from $900$ (the number of decision makers) to $4500$: this is the number of decision makers ($900$) times the number of alternatives ($5$).
+In the above, the argument `varying` lets the function know that the variables in the columns 3 through 13 in the dataframe are alternative-specific, and therefore vary across utility functions. Once that the format of the table has been changed from "wide" to "long", the number of rows changes from $900$ (the number of decision makers) to $4500$: this is the number of decision makers ($900$) times the number of alternatives ($5$).
 
 Before estimating an initial model, we need to define the utility functions that we wish to estimate. Since there are five alternatives, we define the following five functions (with heat pump as the reference level):
 $$
@@ -129,21 +129,27 @@ $$
 
 These functions include only the instalation cost of the systems (ic). The `mlogit` function can be used to estimate this model (call this Model 1), using the electric central system ("ec") as the reference level:
 ```{r}
+mod1 <- mlogit(depvar ~ ic, Heating, shape = "wide", choice = "depvar", reflevel = "ec", varying = c(3:7))
+summary(mod1)
+```
+
+We can verify that this is identical to estimating the model in the long format:
+```{r}
 mod1 <- mlogit(depvar ~ ic, H, reflevel = "ec")
 summary(mod1)
 ```
 
 ## The meaning of the coefficients
 
-The coefficients of a discrete choice model are informative because they modulate the effect of various variables on the probabilities of selecting alternatives. In addition, they also can be used to understand how decision-makers trade-off different attributes.
+The coefficients of a discrete choice model are informative because they modulate the effect of various variables on the probabilities of selecting alternatives. For this reason, they can be used to understand how decision-makers trade-off different attributes.
 
 The first thing to note is the sign of the coefficients. In the case of the binomial and multinomial logit model, the signs of the coefficients are informative because they tell us something about how the utility is affected by an attribute (either of the alternatives or the decision-maker). A positive sign indicates that the utility increases as the attribute increases. For instance, when considering mobile phones, we would expect speed to increase the utility of the alternatives. On the other hand, we would expect the price of the mobile phones to decrease their utility: the higher the cost, the lower the utility derived from an alternative. In this case, the expected sign of the coefficient for price would be negative.
 
-Inspecting the results of Model 0, we notice that the sign of the coefficient for installation costs is negative; this implies that the utility of a system tends to decrease as the installation cost increases. Not surprisingly, since central gas systems have the lowest installation costs, they are also the most popular, whereas heat pumps, with the highest installation costs, are the least popular.
+Inspecting the results of Model 1 above, we notice that the sign of the coefficient for installation costs is negative; this implies that the utility of a system tends to decrease as the installation cost increases. Not surprisingly, since central gas systems have the lowest installation costs, they are also the most popular, whereas heat pumps, with the highest installation costs, are the least popular.
 
-Alas, beyond this qualitative assessment of the signs of the coefficients, their magnitudes are not directly interpretable.
+If you are familiar with linear regression analysis, you are probably used to think of the coefficients as marginal effects: what is the impact on the outcome of a unit change in the relevant attribute. This interpretation does not hold in the case of discrete choice models, and so beyond a qualitative assessment of the signs of the coefficients, their magnitudes are not directly interpretable.
 
-Recall that underlying the logit models is a sigmoid relationship between the probabilities and the _differences in attributes_ among utility functions. As discussed in Chapter \@ref(chapter-3), the effect on the probability of choosing an alternative, given a change on some attribute, is not constant along the logit probability curve, and in fact depends on the initial value of the variable, as seen in Figure \@ref(fig:fig-logistic-shape-implication)) below.
+To understand why this is so, we must recall that underlying a logit model is a sigmoid relationship between the probabilities and the _differences in attributes_ among utility functions. As discussed in Chapter \@ref(chapter-3), the effect on the probability of choosing an alternative, given a change on some attribute, is not constant along the logit probability curve, and in fact depends on the initial value of the variable, as seen in Figure \@ref(fig:fig-logistic-shape-implication)) below.
 
 ```{r fig-logistic-non-linear, fig.cap= "\\label{fig:fig-logistic-non-linear}The logit probability is not linear on the variables"}
 # Create a data frame for plotting
@@ -165,7 +171,7 @@ logit_plot +
   annotate("segment", x = 1.25, xend = 1.25, y = 0.5, yend = 0.77, colour = "red", linetype = "dashed")
 ```
 
-A number of different techniques are available instead to assess the behavioral implications of changes in some of the attributes. We will cover some relevant techniques next.
+A number of different techniques are available instead to assess the behavioral implications of changes in one or more of the attributes. We will cover some relevant techniques next.
 
 ## Marginal effects
 
@@ -175,12 +181,12 @@ $$
 M^y_{x_k}=\frac{\partial y}{\partial x_k}
 $$
 
-In the case of discrete choice models, the dependent variable that we are interested in is the probability of choosing alternative $j. Louviere et al. [-@Louviere2000stated, p. 58-59] show that, given a discrete choice model, the marginal effect is:
+In the case of discrete choice models, the dependent variable that we are interested in is the probability of choosing alternative $j$. Louviere et al. [-@Louviere2000stated, p. 58-59] show that, given a discrete choice model, the marginal effect is:
 
 $$
 M^{P_{in}}_{x_{jnk}} = \beta_{k}(\delta_{ij}-P_{jn})
 $$
-where $P_{jn}$ is the probability of decision-maker $n$ selecting alternative $j$ and $\beta_{jk}$ is the coefficient that corresponds to variable $x_{jnk}$. This measures the change in probability as a result of a one-unit change in the units of $x_{jnk}$.
+where $P_{jn}$ is the probability of decision-maker $n$ selecting alternative $j$ and $\beta_{jk}$ is the coefficient that corresponds to variable $x_{jnk}$. This measures the change in probability as a result of a one-unit change in $x_{jnk}$.
 
 Two cases result from this expression: 
 
@@ -193,57 +199,53 @@ $$
 
 We discuss these cases next, but first, to continue to work with an example, we need to estimate the probability of choosing different systems at different levels of the installation costs. We use different levels of the installation cost because the effects will not be the same at different starting points in the logit curve!. 
 
-To simulate this situation, we begin by copying the input dataframe. Here the first 20 rows are copied so that we can modify the data for 5 different systems (and their cost) and 4 regions: 
+To simulate this situation, we begin by copying the input dataframe. Here we copy one row from the input data frame for each of the levels that we wish to simulate, namely, at the minimum cost, at the mean cost, and at the maximum cost:
 ```{r}
-ic_min <- H[1:20,]
-ic_mean <- H[1:20,]
-ic_max <- H[1:20,]
+ic_min <- Heating[1,]
+ic_mean <- Heating[1,]
+ic_max <- Heating[1,]
 ```
 
 Next, we define the following vectors to retrieve the minimum, mean, and maximum installation costs for each heating system:
 ```{r}
-min_cost <- with(H, data.frame(ic = tapply(ic, index(mod1)$alt, min)))
-mean_cost <- with(H, data.frame(ic = tapply(ic, index(mod1)$alt, mean)))
-max_cost <- with(H, data.frame(ic = tapply(ic, index(mod1)$alt, max)))
+min_cost <- Heating %>%
+  select(starts_with("ic")) %>% apply(2, min)
+mean_cost <- Heating %>%
+  select(starts_with("ic")) %>% apply(2, mean)
+max_cost <- Heating %>%
+  select(starts_with("ic")) %>% apply(2, max)
 ```
 
 We now replace the cost of installation with these vectors. Since each vector contains five values (for five heating systems) we need to repeat the vector 4 times (for 4 regions):
 ```{r}
-ic_min$ic <- rep(t(min_cost), times = 4)
-ic_mean$ic <- rep(t(mean_cost), times = 4)
-ic_max$ic <- rep(t(max_cost), times = 4)
-```
-
-And finally, we replace the regions:
-```{r}
-ic_min$region <- rep(c("valley", "scostl", "mountn", "ncostl"), each = 5)
-ic_mean$region <- rep(c("valley", "scostl", "mountn", "ncostl"), each = 5)
-ic_max$region <- rep(c("valley", "scostl", "mountn", "ncostl"), each = 5)
+ic_min[3:7] <- min_cost
+ic_mean[3:7] <- mean_cost
+ic_max[3:7] <- max_cost
 ```
 
 If we quickly examine the dataframe with the minimum installation costs:
 ```{r}
-head(ic_min, 10)
+head(ic_min)
 ```
 
-We can see that we have simulated a dataset that includes the minimum installation cost of every system for each of four regions. We did not modify any of the other variables the age, income
+We can see that we have simulated a dataset that includes the minimum installation cost of every system. We did not modify any of the other variables (they are not part of the model, so this does not matter).
 
-Given the different values of installation cost (at min, mean, and max), we can predict the probabilities as follows:
+Given the different values of installation cost (at min, mean, and max), we can predict the probabilities as follows (notice that predicting with an `mlogit` model requires the new data to be in long format, so we change the wide format by means of `mlogit.data`):
 ```{r}
-p_mod1_ic_min <- predict(mod1, newdata = ic_min)
-p_mod1_ic_mean <- predict(mod1, newdata = ic_mean)
-p_mod1_ic_max <- predict(mod1, newdata = ic_max)
+p_mod1_ic_min <- predict(mod1, newdata = mlogit.data(ic_min, shape = "wide", choice = "depvar", varying = 3:7))
+p_mod1_ic_mean <- predict(mod1, newdata = mlogit.data(ic_mean, shape = "wide", choice = "depvar", varying = 3:7))
+p_mod1_ic_max <- predict(mod1, newdata = mlogit.data(ic_max, shape = "wide", choice = "depvar", varying = 3:7))
 ```
 
-The probabilities at their corresponding costs are summarized below (since "region" was not a covariate we can pick any region - they are all the same):
+The probabilities at their corresponding costs are summarized below:
 ```{r}
 data.frame(System = c("Electric Central", "Electric Room", "Gas Central", "Gas Room", "Heat Pump"),
-           Cost_min = ic_min$ic[1:5],
-           Prob_min = p_mod1_ic_min[1,],
-           Cost_mean = ic_mean$ic[1:5],
-           Prob_mean = p_mod1_ic_mean[1,],
-           Cost_max = ic_max$ic[1:5],
-           Prob_max = p_mod1_ic_max[1,]) %>%
+      ic_min = ic_min %>% select(starts_with("ic")) %>% t() %>% as.numeric(),
+      p_min = p_mod1_ic_min %>% as.numeric(),
+      ic_mean = ic_mean %>% select(starts_with("ic")) %>% t() %>% as.numeric(),
+      p_mean = p_mod1_ic_mean %>% as.numeric(),
+      ic_max = ic_max %>% select(starts_with("ic")) %>% t() %>% as.numeric(),
+      p_max = p_mod1_ic_max %>% as.numeric()) %>%
   kable(col.names = c("System",
                       "Cost",
                       "Probability",
@@ -253,8 +255,10 @@ data.frame(System = c("Electric Central", "Electric Room", "Gas Central", "Gas R
                       "Probability"),
         digits = 3) %>%
   kable_styling() %>%
-  add_header_above(c(" " = 2, "Minimum Cost" = 2, "Mean Cost" = 2, "Maximum Cost" = 2))
+  add_header_above(c(" " = 1, "Minimum Cost" = 2, "Mean Cost" = 2, "Maximum Cost" = 2))
 ```
+
+Of the different systems, the probability of choosing Electric Central changes the least as the cost of installation changes to the mean cost of such system, and the maximum cost. The probability of choosing Heat Pump is similar at its lowest installation cost to Electric Central, and changes substantially; it is true too that these systems can be more expensive. The probability of choosing Gas Central increases as its installation cost goes up, but this is in comparison to the maximum installation cost of every other system! Clearly, trying to understand the probabilities as the cost of every system changes is not straightforward. To understand the response of changing the installation cost by one unit at each of the three levels of cost above,_ _while other things remain constant_, we calculate the direct marginal effects, as shown next. 
 
 ### Direct marginal effects
 
@@ -283,7 +287,7 @@ The values above indicate that the probabilities of choosing an electric central
 
 ### Cross-marginal effects
 
-The cross-marginal effect is defined as follows:
+We know that as the probability of choosing one alternative changes, the other probabilities change as well in response. The cross-marginal effect, which is defined as follows, is useful to investigate this effect:
 
 $$
 M^{P_{in}}_{x_{jnk}} = -\beta_{jk}P_{jn}
@@ -320,7 +324,7 @@ Following a similar logic as above, there are two cases of the elasticity, direc
 
 ### Direct-point elasticity
 
-Direct-point elasticity is calculated at a point value of $x_ink$ (attribute $k$ of alternative $i$ of decision-maker $k$) with respect to the probability of selecting alternative $i$. This elasticity is useful to ask the question:
+Direct-point elasticity is calculated at a point value of $x_ink$ (attribute $k$ of alternative $i$ of decision-maker $k$) with respect to the probability of selecting alternative $i$. This elasticity is useful when our question about behavior is as follows:
 
 > "How much would the probability of choosing alternative $i$ change if its attribute $k$ changed by one percent?"
 
@@ -348,7 +352,7 @@ Notice that the elasticity tends to give greater values than the marginal effect
 
 ### Cross-point elasticity
 
-Another useful measure of elasticity is the _cross-point elasticity_. This is useful to ask the question:
+Another useful measure of elasticity is the _cross-point elasticity_. This is a useful tool that responds to the question:
 
 > "How much would the probability of choosing alternative $i$ change if attribute $k$ of alternative $j$ changed by one percent?"
 
@@ -357,9 +361,11 @@ Or, for example:
 > "How much would the probability of choosing an electric central heating system change if the installation cost of the gas central heating system changed by one percent?"
 
 Again, Louviere et al. [-@Louviere2000stated, p. 58-59] show that, given a discrete choice model, the cross-point elasticity is given by:
+
 $$
 E^{P_{in}}_{x_{ink}} = -\beta_{jk}x_{jnk}P_{jn}
 $$
+
 where $P_{jn}$ is the probability of decision-maker $n$ selecting alternative $j$, given a variable $x_{jnk}$ and its corresponding coefficient $\beta_jk$.
 
 The cross-point elasticities of gas central heating at the min, mean, and max values of installation cost are:
@@ -379,21 +385,21 @@ Fortunately, all the effects discussed above can be easily calculated once that 
 
 The marginal effects can be computed by means of the `effects` function. This function takes four arguments, as follows: an `mlogit` model, the name of the covariate (or attribute) that we wish to examine, the type of effect, and the data for calculating the effects.
 
-For the marginal effects, the "type" of the effect is "(r)elative" for the probability and "(a)bsolute"" for the covariate. In the case of the marginal effects at the minimum values of cost we use `mod0` (our `mlogit` model object), indicate the covariate of interest (`ic` for installation cost), the type of effect ("ra"), and the input data:
+For the marginal effects, the "type" of the effect is "(r)elative" for the probability and "(a)bsolute"" for the covariate. In the case of the marginal effects at the minimum values of cost we use `mod1` (our `mlogit` model object), indicate the covariate of interest (`ic` for installation cost), the type of effect ("ra"), and the input data (again, notice that the input data needs to be in long format; this is because the function needs to make predictions using the model):
 ```{r}
-effects(mod1, covariate = "ic", type = "ra", data = ic_min[1:5,])
+effects(mod1, covariate = "ic", type = "ra", data = mlogit.data(ic_min, shape = "wide", choice = "depvar", varying = 3:7))
 ```
 
-The values on the diagonal of the table above are the direct marginal effects, whereas other values are the cross-marginal effects.
+The values on the diagonal of the table above are the direct marginal effects, and the values off the diagonal are the cross-marginal effects.
 
 The marginal effects at the mean values (sometimes called _MEM_, i.e., marginal effects at the mean) are:
 ```{r}
-effects(mod1, covariate = "ic", type = "ra", data = ic_mean[1:5,])
+effects(mod1, covariate = "ic", type = "ra", data = mlogit.data(ic_mean, shape = "wide", choice = "depvar", varying = 3:7))
 ```
 
 And the marginal effects at the maximum values are:
 ```{r}
-effects(mod1, covariate = "ic", type = "ra", data = ic_max[1:5,])
+effects(mod1, covariate = "ic", type = "ra", data = mlogit.data(ic_max, shape = "wide", choice = "depvar", varying = 3:7))
 ```
 
 You can verify that, with some small rounding error, they correspond to the values calculated previously.
@@ -402,15 +408,15 @@ You can verify that, with some small rounding error, they correspond to the valu
 
 As well, the direct-point and cross-point elasticities can be calculated using the `effects` function, however in this case the type of the effects is _relative_ both for the probability and for the covariate.
 ```{r}
-effects(mod1, covariate = "ic", type = "rr", data = ic_min[1:5,])
+effects(mod1, covariate = "ic", type = "rr", data = mlogit.data(ic_min, shape = "wide", choice = "depvar", varying = 3:7))
 ```
 
 The values on the diagonal of the table above are the direct-point elasticities, whereas other values are the cross-point elasticities.
 
 The effects can be calculated at various levels of the covariate of interest, for instance the mean and max:
 ```{r}
-effects(mod1, covariate = "ic", type = "rr", data = ic_mean[1:5,])
-effects(mod1, covariate = "ic", type = "rr", data = ic_max[1:5,])
+effects(mod1, covariate = "ic", type = "rr", data = mlogit.data(ic_mean, shape = "wide", choice = "depvar", varying = 3:7))
+effects(mod1, covariate = "ic", type = "rr", data = mlogit.data(ic_max, shape = "wide", choice = "depvar", varying = 3:7))
 ```
 
 ## A note about attributes in dummy format
@@ -422,28 +428,40 @@ summary(Heating$region)
 
 As can be seen, there are four regions. In the sample, $177$ respondents lived in the region labeled as "valley", $361$ in the south coastal ("scostl"), $102$ in the mountain ("mountn"), and $260$ in north coastal ("ncostl").
 
-The marginal effects and elasticities discussed above are not appropriate for use when it comes to dummy variables. The reason for this is that marginal changes are not meaningful (e.g., what does it mean to increase region "mountain" by one unit of by 1%?)
+The marginal effects and elasticities discussed above are not appropriate for use when it comes to dummy variables. The reason for this is that marginal changes are not meaningful (e.g., what does it mean to increase region "mountain" by one unit or by 1%?)
 
 When variable $x_{ink}$ is a dummy variable, the marginal effect must be calculated as follows:
+
 $$
 M^{P_{in}}_{x_{ink}} = P_{in}(x_{ink} = 1) - P_{in}(x_{ink} = 0)
 $$
 
 In other words, the marginal effect is the difference in the probability of choosing $i$ when the dummy variable is $1$ versus when it is $0$.
 
-Let estimate a second model that uses the regions variable to illustrate this (call this Model 2):
+Next, we will estimate a second model that uses the regions variable to illustrate this (call this Model 2):
 ```{r}
-mod2 <- mlogit(depvar ~ ic | region, H)
+mod2 <- mlogit(depvar ~ ic | region, Heating, shape = "wide", choice = "depvar", reflevel = "ec", varying = c(3:7))
 summary(mod2)
 ```
 
-Notice that none of the regional coefficients is significant, so we would likely not include these variables in the model. However, for the sake of the example, lets calculate the marginal effect of the dummy variables at the mean of installation cost.
+Notice that none of the regional coefficients is significant, so we would likely not include these variables in the model. However, for the sake of the example, we will calculate the marginal effect of the dummy variables at the mean of installation cost.
 
-We had already created a matrix with the mean of the installation cost at various regions.
+We had already created a matrix with the mean of the installation cost. To add the four regions, we will copy the row four times, and then add the regions:
+```{r}
+ic_mean_region <- ic_mean %>% 
+  mutate(count = 4) %>% 
+  uncount(count)
+ic_mean_region$region <- c("valley", "scostl", "mountn", "ncostl")
+```
+
 
 ```{r}
 p_region_ic_mean <- data.frame(Region = c("valley", "scostl", "mountn", "ncostl"),
-                               predict(mod2, newdata = ic_mean, outcome = FALSE))
+                               predict(mod2, newdata = mlogit.data(ic_mean_region,
+                                                                   shape = "wide", 
+                                                                   choice = "depvar", 
+                                                                   varying = 3:7), 
+                                       outcome = FALSE))
 p_region_ic_mean
 ```
 
@@ -474,13 +492,13 @@ V_{\text{hp}} = & \beta_{hp} & + \beta_1\text{ic.hp} + \beta_2\text{oc.hp}\\
 \end{array}
 $$
 
-The model can be reestimated using these constants. The option `reflevel` is used to select the alternative that will work as reference (call this Model 3):
+The model can be reestimated using these constants. The option `reflevel` is used to select the alternative that will work as reference (call this Model 3; notice that the columns that vary needs to be updated to include the new alternative-related variable):
 ```{r}
-mod3 <- mlogit(depvar ~ ic + oc, H, reflevel = "ec")
+mod3 <- mlogit(depvar ~ ic + oc, Heating, shape = "wide", choice = "depvar", reflevel = "ec", varying = c(3:12))
 summary(mod3)
 ```
 
-So, how is this model used to understand consumer preferences? Recall that the question is at what rate are consumers willing to pay for installation relative to operation.
+So, how can this model be used to understand consumer preferences? Recall that the question is at what rate are consumers willing to pay for installation relative to operation.
 
 The coefficients of the model provide useful information. Suppose that we would like to know at what rate consumers would be willing to trade one aspect of the good for another, whithout compromising the utility they derive from it. In effect we would like to know how changes in one attribute relate to changes in the other. In the present case, we want to know how installation costs change with respect to operation costs, while mainting the utility (i.e., the change in utility is zero):
 
@@ -516,21 +534,16 @@ To the extent that random utility models can capture consumer preferences, they 
 
 Heat pumps are on average more expensive than other heating systems, but they are also more energy-efficient. Suppose then that the government, which has perhaps carbon emission targets that it wishes to meet, is analyzing a policy to encourage the adoption of heat pumps. The policy is to offer a rebate of 15% on the installation cost of heat pumps. As a consequence of this policy, consumers who install a heat pump and apply for the rebate pay only 85% of the cost of installation.
 
-To simulate this scenario, we begin by copying the input dataframe:
+To simulate this scenario, we copy the input dataframe after simulating the rebate, replacing the cost of installation as follows: 
 ```{r}
-H_rebate <- H
-```
-
-In the new dataframe that will simulate the rebate, replacing the cost of installation as follows: 
-```{r}
-H_rebate[H_rebate$alt == "hp", "ic"] <- 0.85 * H_rebate[H_rebate$alt == "hp", "ic"]
+H_rebate <- Heating %>% mutate(ic.hp = 0.85 * ic.hp)
 ```
 
 We can calculate the market shares of the "do nothing" and "rebate" policies and compare their shares (which are the mean values of the predictions):
 ```{r}
 data.frame(Policy = c("Do nothing", "15% rebate"),
-           rbind(apply(predict(mod3, newdata = H), 2, mean),
-                 apply(predict(mod3, newdata = H_rebate), 2, mean)))
+           rbind(apply(predict(mod3, newdata = mlogit.data(Heating, shape = "wide", choice = "depvar", varying = c(3:12))), 2, mean),
+                 apply(predict(mod3, newdata = mlogit.data(H_rebate, shape = "wide", choice = "depvar", varying = c(3:12))), 2, mean)))
 ```
 
 ### Introduction of a new system
