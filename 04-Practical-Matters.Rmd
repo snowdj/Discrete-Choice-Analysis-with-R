@@ -60,16 +60,15 @@ In this practice, you will learn about:
 
 Load the packages used in this section:
 ```{r message=FALSE}
-library(tidyverse)
-library(evd)
-library(mlogit)
 library(kableExtra)
+library(mlogit)
 library(plotly)
+library(tidyverse)
 ```
 
 Load the dataset used in this section:
 ```{r}
-load("Commute Mac.RData")
+load("Commute Mac Wide.RData")
 ```
 
 ## The anatomy of utility functions
@@ -235,17 +234,27 @@ Understanding the anatomy of utility functions is essential to properly specify 
 
 ## Example: Specifying the utility functions
 
-We will now proceed to work with a practical example, using the dataset that you encountered before in Chapter \@ref(chapter-1). This dataset contains information on various modes of transportation used by people commuting to McMaster University in Canada [@Whalen2013]. The dataset was loaded above as part of the preliminaries of this chapter. We can begin by exploring the data. First, we notice that this is a dataframe that has been prepared for use with the `mlogit` package:
-```{r}
-class(mc_commute)
-```
-
-Please note that this is the same dataset that you used in Chapter \@ref(chapter-1), but not the same file. For convenience, the dataset was pre-processed for use with `mlogit`. The contents of the dataframe can be quickly seen by means of the function `head()`. This function will display the first few top rows of the dataframe:
+We will now proceed to work with a practical example, using the dataset that you encountered before in Chapter \@ref(chapter-1). This dataset contains information on various modes of transportation used by people commuting to McMaster University in Canada [@Whalen2013]. The dataset was loaded above as part of the preliminaries of this chapter. We can begin by exploring the data. Please note that this is the same dataset that you used in Chapter \@ref(chapter-1), but not the same file. For convenience, the dataset was pre-processed. The contents of the dataframe can be quickly seen by means of the function `head()`. This function will display the first few top rows of the dataframe:
 ```{r}
 head(mc_commute, 8)
 ```
 
-As you can see, the dataframe has been organized in a particular way. Now, instead of each row being an individual, each row is a choice situation. Since there are four alternatives in this case, each row corresponds to the choice situation for an alternative for an individual. We notice that the row names now have the format `#.Alt`, where `#` is the number of the decision maker and `Alt` is the name of the alternative. In this way the first four rows of the table correspond to the first decision-maker who, faced with four alternatives, chose HSR (public transportation) - as recorded in the column `choice`. The next four rows correspond to the second decision-maker in the sample (who also chose HSR), and so on, four rows per decision-maker. More generally, there will be $J$ rows per decision-maker, unless not all alternatives were not available to all individuals in the sample. More on this later.
+As you can see, the dataframe is in wide format, meaning that each row represents one decision-maker and the information about the choice situations is spread: for instance, there is one variable for travel time, but it appears in four columns, one for each of the alternatives ("Cycle", "Walk", "HSR", and "Car"). The package `mlogit` works with _long_ tables, where each row is a choice situation. Since wide tables are more common, the package includes a utility function to reshape the table. This is used below to convert our wide table into a long table. Notice that we need to indicate which variables are _varying_, meaning that they vary by alternative. In our wide table, there are four variables that vary by alternative: travel time (`time`), access time (`access`: the time needed to reach an HSR bus stop), waiting time (`wait`: time spent waiting for an HSR bus), and number of transfers when using HSR (`transfer`). The latter three variables are specific to HSR and therefore are set to zero for the modes "Car", Cycle", and "Walk".
+```{r}
+mc_commute_long <- mlogit.data(mc_commute, shape = "wide", choice = "choice", varying = 7:22)
+```
+
+If we examine the long table, we see that instead of each row being an individual, each row is a choice situation:
+```{r}
+head(mc_commute_long, 8)
+```
+
+Since there are four alternatives in this case, each row corresponds to the choice situation for an alternative for an individual. We notice that the row names now have the format `#.Alt`, where `#` is the number of the decision-maker and `Alt` is the name of the alternative. In this way the first four rows of the table correspond to the first decision-maker who, faced with four alternatives, chose HSR (public transportation) - as recorded in the column `choice`. The next four rows correspond to the second decision-maker in the sample (who also chose HSR), and so on, four rows per decision-maker. More generally, there will be $J$ rows per decision-maker. When an attribute is missing, this means that the alternative was not available to the decision-maker. For example:
+```{r}
+select(mc_commute_long, time) %>% head(8)
+```
+
+Here we see that the modes "Car" and "Cycle" were not available to decision-maker 1, and "Cycle" was not available to decision-maker 2.
 
 The first step towards developing a choice model is to specify the utility functions for the desired model. The package `mlogit` uses the package `mFormula` to create the functions. This package creates objects that build upon the [`Formula` package](https://CRAN.R-project.org/package=Formula ) for multi-component formulas. As seen above, utility functions can potentially have multiple components, so the functionality to build formulas in `mFormula` and `Formula` is quite useful.
 
@@ -257,10 +266,10 @@ $$
 
 If we list all columns in the dataframe, we can see what variables are available for this analysis:
 ```{r}
-colnames(mc_commute)
+colnames(mc_commute_long)
 ```
 
-Besides identifier variables `id` and `chid`, and the variable for `choice`, we see that several variables are specific to the individual decision-makers. These are `parking` (availability of a parking pass), `vehind` (whether the decision-maker has individual access to a private vehicle), `gender`, `age`, `shared` (living in shared accommodations away from the family home), `family` (living at the family home), and `child` (minors are present in the household). Furthermore, some variables relate to the physical environment of the place of residence (`street_density` and `sidewalk_density`), in addition to the coordinates of the place of residence (geocoded to the nearest major intersection or postal code centroid). One variable is alternative specific, namely `time` (travel time in minutes). And three variables are specific to public transportation, namely `HSR.access` (access time to public transportation in minutes), `HSR.wait` (waiting time in minutes), and `HSR.transfer` (number of transfers when traveling by public transportation). 
+Besides identifier variables `id` and `chid`, and the variable for `choice`, we see that several variables are specific to the individual decision-makers. These are `parking` (availability of a parking pass), `vehind` (whether the decision-maker had individual access to a private vehicle), `gender`, `age`, `shared` (living in shared accommodations away from the family home), `family` (living at the family home), and `child` (respondent was responsible for at least one minors in the household). Furthermore, some variables relate to the physical environment of the place of residence (`street_density` and `sidewalk_density`), in addition to the coordinates of the place of residence (geocoded to the nearest major intersection or postal code centroid). One variable is alternative specific, namely `time` (travel time in minutes). And, as noted before, three variables are specific to public transportation, namely `access` (access time to public transportation in minutes), `wait` (waiting time in minutes), and `transfer` (number of transfers when traveling by public transportation).
 
 We can begin by defining a very simple formula that considers only travel time. We will save this object as `f1`:
 ```{r}
@@ -269,10 +278,10 @@ f1 <- mFormula(choice ~ time)
 
 The function `model.matrix` allows us to see how the formula is applied to the data (we use `head()` to display only the top rows of the model matrix):
 ```{r}
-head(model.matrix(f1, mc_commute), 8)
+head(model.matrix(f1, mc_commute_long, 8))
 ```
 
-We can see that the formula includes by default the alternative specific coefficients, in this case using as the mode cycling as the reference alternative. The corresponding utility functions are as follows:
+We can see that the formula includes by default the alternative specific coefficients, in this case using car as the reference alternative. The corresponding utility functions are as follows:
 
 $$
 \begin{array}{l}
@@ -297,14 +306,14 @@ $$
               }_{\text{alternative vars. with generic coefficients}}
 $$
 
-Define now a formula with an individual-specific variable, say age, and call it `f2`:
+Define now a formula with an individual-specific variable, say sidewalk density at the place of residence, and call it `f2`:
 ```{r}
-f2 <- mFormula(choice ~ time | age)
+f2 <- mFormula(choice ~ time | sidewalk_density)
 ```
 
 The model matrix is now:
 ```{r}
-head(model.matrix(f2, mc_commute), 8)
+head(model.matrix(f2, mc_commute_long))
 ```
 
 And the utility functions are therefore:
@@ -332,23 +341,23 @@ $$
               }_{\text{alternative vars. with generic coefficients}}
   \overbrace{ \begin{array}{lll}
                 0 & +0 & +0\\
-                \gamma_{1}\text{age}_{i} & +0 & +0\\
-                0 & + \gamma_{2}\text{age}_{i} & +0 \\
-                0 & +0 & +\gamma_{3}\text{age}_{i}\\
+                \gamma_{1}\text{swd}_{i} & +0 & +0\\
+                0 & + \gamma_{2}\text{swd}_{i} & +0 \\
+                0 & +0 & +\gamma_{3}\text{swd}_{i}\\
               \end{array}
               }^\text{individual vars with specific coefficients} 
 $$
 
 Here, we try a different formula, where time has alternative-specific instead of generic coefficients, and call it `f3`:
 ```{r}
-f3 <- mFormula(choice ~ 0 | age | time)
+f3 <- mFormula(choice ~ 0 | sidewalk_density | time)
 ```
 
 Note that, since we do not define other alternative-specific variables with generic coefficients, we have to explicitly state that there are `0` such variables!
 
 This formula leads to the following model matrix:
 ```{r}
-head(model.matrix(f3, mc_commute), 8)
+head(model.matrix(f3, mc_commute_long))
 ```
 
 The utility functions for this are:
@@ -369,9 +378,9 @@ $$
               }^\text{alternative specific constants} 
   \underbrace{ \begin{array}{lll}
                 0 & +0 & +0\\
-                \gamma_{1}\text{age}_{i} & +0 & +0\\
-                0 & + \gamma_{2}\text{age}_{i} & +0 \\
-                0 & +0 & +\gamma_{3}\text{age}_{i}\\
+                \gamma_{1}\text{swd}_{i} & +0 & +0\\
+                0 & + \gamma_{2}\text{swd}_{i} & +0 \\
+                0 & +0 & +\gamma_{3}\text{swd}_{i}\\
               \end{array}
               }_\text{individual vars with specific coefficients} 
   \overbrace{\begin{array}{lll}
@@ -571,7 +580,7 @@ plot_ly(z = ~L, x = ~mu, y = ~beta) %>%
   layout(scene = list(
       xaxis = list(title = "x-axis (mu)"),
       yaxis = list(title = "y-axis (beta)"),
-      zaxis = list(title = "z-axis (L)")
+      zaxis = list(title = "$z$-axis (L)")
     ))
 
 ```
@@ -623,8 +632,8 @@ Maximizing the likelihood is a useful criterion to estimate the coefficients of 
 
 In this toy example we "solved" the problem of maximizing the likelihood by hand. This is rather difficult, unfeasible even, in most applied situations with large samples and/or more than one variable. Fortunately, there are a number of numerical algorithms that can be used to maximize the likelihood. We will not discuss this in detail, but interested readers can consult Train [-@Train2009discrete; Section 3.7] for details. The `mlogit` package imports the package `maxLik` [@Henningsen2011maxlik], which implements canonical algorithms including [Newton-Raphson](https://en.wikipedia.org/wiki/Newton%27s_method), the Berndt–Hall–Hall–Hausman (or [BHHH](https://en.wikipedia.org/wiki/Berndt-Hall-Hall-Hausman_algorithm)), and the Broyden–Fletcher–Goldfarb–Shanno (or [BFGS](https://en.wikipedia.org/wiki/Broyden-Fletcher-Goldfarb-Shanno_algorithm)) algorithm.
 
-
 In practice, the algorithms above maximize not the likelihood function, but a transformation thereof, called the _log-likelihood_, which is obtained by taking the natural logarithm of the function, to give:
+
 $$
 l = \sum_{i=n}^N\sum_{j=1}^J y_{ij}log(P_{ij})
 $$
@@ -643,74 +652,91 @@ class(f3)
 
 The value (output) of the function can be named and saved to an object for further analysis or for further processing, post-estimation. Begin by estimating a model using the simplest of our formulas:
 ```{r}
-model1 <- mlogit(f1, mc_commute)
+model1 <- mlogit(f1, mc_commute_long)
 summary(model1)
 ```
 
 The output of the function includes the estimated frequencies of alternatives in addition to information about the optimization procedure. For instance, the message "successive function values within tolerance limits" indicates that the algorithm converged normally. 
 
-The output also reports the estimated values of the coefficients, along with standard errors, z-values, and p-values. The null hypothesis associated with the coefficients is that they are zero. An analyst can reject the null hypothesis in any case, but small p-values indicate a low probability that the coefficient is zero - and therefore increase the confidence that by rejecting the null the analyst is not mistakenly rejecting a true zero. In the present case, with p-values smaller than 0.0001, the null hypothesis can be comfortably rejected for every coefficient. The small p-values mean that it is highly unlikely that the coefficients are zero.
+The output also reports the estimated values of the coefficients, along with standard errors, $z$-values, and $p$-vallues. The null hypothesis associated with the coefficients is that they are zero. An analyst can reject the null hypothesis in any case, but small $p$-vallues indicate a low probability that the coefficient is zero - and therefore increase the confidence that by rejecting the null the analyst is not mistakenly rejecting a true zero. In the present case, with $p$-vallues smaller than 0.0001, the null hypothesis can be comfortably rejected for every coefficient. The small $p$-vallues mean that it is highly unlikely that the coefficients are zero.
 
-This simple model includes three alternative-specific constants and one alternative-specific variable with a generic coefficient. The signs of the coefficients are informative. Since the reference mode is "Cycle", the positive values of the constants indicate that, other things being equal, cycling is the least preferred mode, followed by HSR and then Car. The most preferred mode (again, other things being equal), is Walk. This is verified from the estimated frequencies of the modes.
+This simple model includes three alternative-specific constants and one alternative-specific variable with a generic coefficient. The signs of the coefficients are informative. Since the reference mode is "Car", the positive values of the constants indicate that, other things being equal, car is the least preferred mode, followed by cycling, HSR, and then walk (which gives the highest utility at a constant value of time). This is verified from the estimated frequencies of the modes, where we see that "Walk" is the mode of choice of 51.7% of respondents in the sample.
 
 The negative coefficient for time indicates that time is a "cost", in other words, the utility of travelling tends to decline with increasing travel times. This indicates that slower modes will tend to have lower utilities.
 
 Finally, the maximized value of the log-likelihood function is reported, along with two diagnostics, McFadden R^2 (in reality $\rho^2$) and a likelihood ratio test. We will come back to these diagnostics below, but first, we will estimate a new model using the second formula.
 ```{r}
-model2 <- mlogit(f2, mc_commute)
+model2 <- mlogit(f2, mc_commute_long)
 summary(model2)
 ```
 
-Now there is an individual-specific variable in the model (i.e., age). Only one of those coefficients is significant at conventional levels (i.e., $p<0.05$), and it is negative. Since the reference is "Cycle", a negative value indicates that the utility of walking declines with age with respect to the utility of cycling. Two other coefficients for age (in the utility of HSR and CAR) are not significantly different from zero, meaning that age does not significantly change the utility of travel by HSR and Car with respect to Cycle.
+Now there is an individual-specific variable in the model (i.e., sidewalk density). Only one of those coefficients is significant at a conventional level of significance (i.e., $p<0.05$), and the values is positive. Since the reference is "Car", a positive value indicates that higher sidewalk density causes the utility of walking to increase with respect to the utility of using a car. The same is not true for HSR and "Cycle", whose coefficients for this attribute are not significantly different from "Car".
 
-Note that it is possible to select the reference level for the utilities when estimating the model. For example, lets reestimate the model above, but now using the utility of Walk as the reference:
+Note that it is possible to select the reference level for the utilities when estimating the model. For example, below we re-estimate the preceding model, but now using the utility of Walk as the reference:
 ```{r}
-model2 <- mlogit(f2, mc_commute, reflevel = "Walk")
+model2 <- mlogit(f2, mc_commute_long, reflevel = "Walk")
 summary(model2)
 ```
 
-Now all age-related coefficients are significant! Whereas some of them are not significantly different with respect to each other as seen above (e.g. Cycle and HSR), the are _all_ significantly different from the reference. Since the coefficients are positive, this indicates that the utilities of cycling, using HSR, and traveling by car all increase with age _with respect to walking_.
+Notice that now two sidewalk coefficient are significant! While sidewalk density does not significantly change the utility of cycling with respect to walking, living in a place with high sidewalk density reduces the utility of "Car" and "HSR" _with respect to walking_.
 
-The value of the maximized log-likelihood and other diagnostics are identical, irrespective of which mode is selected as a utility. In essence, the models are the same, but they provide a different perspective on how some coefficients relate to each other across alternatives.
+The value of the maximized log-likelihood and other model diagnostics are identical irrespective of which mode is selected as a utility. In essence, the models are the same, but they provide a different perspective on how some coefficients relate to each other across alternatives.
 
-We can visually explore how the probability of choosing different modes varies with age. First summarize the age variable:
+We can visually explore how the probability of choosing different modes varies with sidewalk density. To do this we will first summarize the sidewalk density variable:
 ```{r}
-summary(mc_commute$age)
+summary(mc_commute_long$sidewalk_density)
 ```
 
-Copy the dataframe used to estimate the model, but only enough columns to explore an age range of 10 years, say from 17 to 26. Since there are four alternatives, this means that we need fourty rows ($J = 4$ and ten one-year intervals):
+Copy the dataframe used to estimate the model, but only enough columns to explore sidewalk densities in the range between 0 and 60 , in intervals of 5. Therefore we need to copy 60 rows from the long table (thirteen levels of sidewalk density times four alternatives):
 ```{r}
-mc_commute_predict <- mc_commute[1:40,]
+mc_commute_predict <- mc_commute_long[1:52,]
 ```
 
-Replace the age variable using values for ages 17 to 26:
+Replace the time variable using values for times 1 to 20. Since each alternative is a row, we need to create a sequence of replicated values as follows:
 ```{r}
-mc_commute_predict$age <- rep(c(17:26), each = 4)
+mc_commute_predict$sidewalk_density <- rep(seq(0, 60, 5), each = 4)
 ```
 
-Replace time by median travel time:
+We can examine the results of simulating the sidewalk density:
 ```{r}
-mc_commute_predict$time <- median(mc_commute$time)
+select(mc_commute_predict, sidewalk_density) %>% head(8)
 ```
 
-Next, predict the probabilities using the `predict()` function:
+The prediction dataframe now includes the range of sidewalk densities that we are interested in.
+
+The setup for the simulation essentially amounts to: what is the probability of choosing each mode for a trip that would take 1 min? For the simulation, we also need to set the values of other variables of interest. Since the model has the variable `time` we need to also set it to a desired value, for instance, the median trip duration (paying attention to remove the missing values):
+```{r}
+median(mc_commute_long$time, na.rm = TRUE)
+```
+
+The median trip length is 10 minutes, so we replace the current values in the prediction dataframe:
+```{r}
+mc_commute_predict$time <- 10
+```
+
+Examine the relevant variables of the prediction dataframe:
+```{r}
+mc_commute_predict %>% select(time, sidewalk_density) %>% summary()
+```
+
+Next, predict the probabilities using the `predict()` function and `model2`:
 ```{r}
 probs <- predict(model2, newdata = mc_commute_predict)
 ```
 
-The value (output) of `predict` is a 10-by-4 matrix that contains the probability for ten age values (i.e., 16, 17, 18, ..., 26), and four modes (Walk, Cycle, HSR, Car). To facilitate plotting, we add the age values and then reshape that 10-by-4 matrix as follows:
+The value (output) of `predict` is a 20-by-4 matrix that contains the probability for twenty travel time values (i.e., $1, 2, 3,\cdots, 20$), and four modes (Walk, Cycle, HSR, Car). To facilitate plotting, we add the time values and then reshape that 10-by-4 matrix as follows:
 ```{r}
-probs <- data.frame(age = c(17:26), probs) %>% 
-  gather(key = "Mode", value = "Probability", -age)
+probs <- data.frame(sidewalk_density = seq(0, 60, 5), probs) %>% 
+  gather(key = "Mode", value = "Probability", -sidewalk_density)
 ```
 
 By "gathering" the probabilities, now the data frame has one column with the mode and one column with the probability. We can then plot, using a different colors for each alternative:
 ```{r}
-ggplot(data = probs, aes(x = age, y = Probability, color = Mode)) +
+ggplot(data = probs, aes(x = sidewalk_density, y = Probability, color = Mode)) +
   geom_line()
 ```
 
-We can see that the probability of walking (for a trip that takes the median duration in the sample) declines with age. The probability of using the three other modes increases with age, but more rapidly for car than for transit or cycling.
+We can see that the probability of walking (for a trip that takes the median duration in the sample) tends to increase as the density of sidewalks increase. The probability of using the three other modes tends to decrease with sidewalk density, but more rapidly for HSR than for car or cycling.
 
 ## Comparing models: McFadden's $\rho^2$
 
@@ -732,9 +758,9 @@ For example, consider the utility functions of `model2`:
 $$
 \begin{array}{l}
   V_{i\text{Cycle}} = 0 &+& \beta_1\text{time}_{i\text{Cycle}} &+& 0\\
-  V_{i\text{Walk}} = \mu_{\text{Walk}} &+& \beta_1\text{time}_{i\text{Walk}} &+& \gamma_{1}\text{age}_{i}\\
-  V_{i\text{HSR}} = \mu_{\text{HSR}} &+& \beta_1\text{time}_{i\text{HSR}} &+& \gamma_{2}\text{age}_{i}\\
-  V_{i\text{HSR}} = \mu_{\text{Car}} &+& \beta_1\text{time}_{i\text{Car}} &+& \gamma_{3}\text{age}_{i}\\
+  V_{i\text{Walk}} = \mu_{\text{Walk}} &+& \beta_1\text{time}_{i\text{Walk}} &+& \gamma_{1}\text{swd}_{i}\\
+  V_{i\text{HSR}} = \mu_{\text{HSR}} &+& \beta_1\text{time}_{i\text{HSR}} &+& \gamma_{2}\text{swd}_{i}\\
+  V_{i\text{HSR}} = \mu_{\text{Car}} &+& \beta_1\text{time}_{i\text{Car}} &+& \gamma_{3}\text{swd}_{i}\\
 \end{array}  
 $$
 
@@ -768,7 +794,7 @@ In the present case, the very small $p$-value leads us to reject the null hypoth
 
 ## Exercise
 
-1. In the example in this chapter we estimated the probabilities of choosing different modes by age setting travel time to the in-sample median. Use `model2` to calculate the probability of choosing the modes but now as a function of **travel time**, for ages 17, 20, 23, and 26.
+1. In the example in this chapter we estimated the probabilities of choosing different modes by sidewalk density setting travel time to the in-sample median. Use `model2` to calculate the probability of choosing each mode but now for travel times 20, 30, 40. Discuss the results.
 
 2. Estimate a model using formula `f3` (call it `model3`). Discuss the output of this model.
 

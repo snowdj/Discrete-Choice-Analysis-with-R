@@ -724,6 +724,25 @@ $$
 E^{P_{in}}_{x_{ink}} = -\Bigg[P_{t} + \Big(\frac{1}{\lambda_t-1}\Big)P_{i|t}\Bigg]\beta_{ik}x_{ink}
 $$
 
+## Fully specified model
+
+Is it possible to fully specify the model and use a multinomial logit model instead?
+```{r}
+H_f <- H
+
+H_f$fuel <- H$region
+H_f$fuel <- ifelse(str_detect(attributes(H_f$fuel)$names, "g"), "Gas", "Electric")
+
+H_f$setup <- H$region
+H_f$setup <- ifelse(str_detect(attributes(H_f$fuel)$names, "r"), "Room", "Central")
+```
+
+
+```{r}
+mod4 <- mlogit(depvar ~ ic + oc + fuel, H_f, reflevel = "ec")
+summary(mod4)
+```
+
 ## Exercise
 
 The blue bus-red bus paradox is a classical illustration of the limitations of the multinomial logit model. This paradox is stated next.
