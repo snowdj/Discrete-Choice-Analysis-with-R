@@ -1,9 +1,9 @@
 ---
-title: "08 Dealing with Heterogeneity I"
+title: "09 Dealing with Heterogeneity II"
 output: html_notebook
 ---
 
-# Dealing with Heterogeneity I: The Mixed Logit Model {#chapter-8}
+# Dealing with Heterogeneity II: The Mixed Logit Model {#chapter-9}
 
 > "Life produces a different taste each time you take it.”
 >
@@ -25,18 +25,16 @@ library(kableExtra)
 library(gridExtra)
 ```
 
-## Taste variations in the population
+## More on taste variation
 
-The preceding chapters (Chapters \@ref(chapter-6) and \@ref(chapter-7)) were concerned with the IIA property of the logit model. As discussed there, when the specification of the model is incomplete, the presence of residual correlation can often lead to inappropriate - even nonsensical - substitution patterns. Accordingly, the GEV family of models (of which the nested logit is a member) and the multinomial probit model aimed at introducing more flexible substitution patterns. The nested logit model achieves this by inducing a hierarchical decision-making structure where alternatives within nests are correlated, whereas the multinomial probit model introduces a flexible, but technically demanding, covariance structure for multinomial choices.
+Chapter \@ref(chapter-8) introduced the latent class logit model, a technique useful to model taste variation. In this chapter, a variation on the theme will be introduced, namely the mixed logit model. We will see how the mixed logit model is related to the latent class logit model.
 
-In this chapter, we introduce a second important issue in the analysis of discrete choices, namely taste variation or heterogeneity.
-
-To motivate the discussion, we will use a dataset from the `AER` package on the mode of transportation used by travelers traveling between Sydney and Melbourne:
+To illustrate the mixed logit model we will use a dataset from the `AER` package on the mode of transportation used by travelers traveling between Sydney and Melbourne:
 ```{r} 
 data("TravelMode", package = "AER")
 ```
 
-This dataset is included in the `AER` package (Applied Econometrics with R) and is a companion to Greene's popular econometrics textbook [@Greene2003econometric]. The dataset includes information about mode choices for individual travelers, namely travel by air, train, bus, or car. The following attributes about the alternatives are available: 
+This dataset is included in the `AER` package (Applied Econometrics with `R`) and is a companion to Greene's popular econometrics textbook [@Greene2003econometric]. The dataset includes information about mode choices for individual travelers, namely travel by air, train, bus, or car. The following attributes about the alternatives are available: 
 
 1. vcost: the vehicle cost component.
 2. travel: travel time in vehicle (in min).
@@ -104,7 +102,7 @@ prbt <- mlogit(choice ~ vcost + travel + wait | 1,
 
 Notice that the nesting structure places all land-based modes in a nest and air in a separate nest (you can try different nesting structures if you wish!). 
 ```{r fig-nesting-structure, fig.cap= "\\label{fig:fig-nesting-structure}Nests in the nested logit model", echo=FALSE}
-knitr::include_graphics(rep("08-Figure-1.jpg"))
+knitr::include_graphics(rep("09-Figure-1.jpg"))
 ```
 
 The results of these models are summarized in Table \ref(@table-base-models) below. 
@@ -146,7 +144,7 @@ kable(df_logit,
                               "; MNP = ", round(1 - (prbt$logLik[1] - nrow(prbt.summary)) / mnl_null$logLik[1], digits = 3))))
 ```
 
-The nested logit model and the multinomial probit model, as discussed in the preceding chapters, accommodate correlations among alternatives. For instance, the inclusive value of the nested logit is in the $0<iv<1$ range, and it is significantly different from 1 (recall that when close to one, the model collapses to the multinomial logit model). The z-score to test whether it is different from one is:
+The nested logit model and the multinomial probit model, as discussed in the preceding chapters, accommodate correlations among alternatives. For instance, the inclusive value of the nested logit is in the $0<iv<1$ range, and it is significantly different from 1 (recall that when close to one, the model collapses to the multinomial logit model). The $z$-score to test whether it is different from one is:
 ```{r}
 (nl$coefficients["iv"] - 1) / sqrt(vcov(nl)["iv","iv"])
 ```

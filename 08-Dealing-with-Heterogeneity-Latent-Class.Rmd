@@ -1,9 +1,9 @@
 ---
-title: "08 Dealing with Heterogeneity II"
+title: "08 Dealing with Heterogeneity I"
 output: html_notebook
 ---
 
-# Dealing with Heterogeneity II: The Latent Class Logit Model {#chapter-9}
+# Dealing with Heterogeneity I: The Latent Class Logit Model {#chapter-8}
 
 > "Byrdes of on kynde and color flok and flye together."
 >
@@ -20,12 +20,18 @@ library(kableExtra)
 library(gridExtra)
 ```
 
-Load the dataset used in this chapter, from the `mlogit` package:
+## Taste variations in the population
+
+The preceding chapters (Chapters \@ref(chapter-6) and \@ref(chapter-7)) were concerned with the IIA property of the logit model. As discussed there, when the specification of the model is incomplete, the presence of residual correlation can often lead to inappropriate - even nonsensical - substitution patterns. Accordingly, the GEV family of models (of which the nested logit is a member) and the multinomial probit model aimed at introducing more flexible substitution patterns. The nested logit model achieves this by inducing a hierarchical decision-making structure where alternatives within nests are correlated, whereas the multinomial probit model introduces a flexible, but technically demanding, covariance structure for multinomial choices.
+
+In this chapter, we introduce a second important issue in the analysis of discrete choices, namely taste variation or heterogeneity.
+
+To motivate the discussion, we will use a data set reported in research by Leon and Miguel [-@Leon2017risky] on the transportation choices of individuals travelling to and from the airport in Freetown, Sierra Leone. This dataset is available in the `mlogit` package:
 ```{r}
 data("RiskyTransport", package = "mlogit")
 ```
 
-This dataset is from a study reported by Leon and Miguel [-@Leon2017risky] on the transportation choices of individuals travelling to and from the airport in Freetown, Sierra Leone. This airport is not on the mainland, and the alternatives for travel are ferry, hovercraft, helicopter, and water taxi. Information about the number of fatalities due to accidents by each of these modes allowed the researchers to calculate the mortality risk by mode.
+The airport in Freetown is not on the mainland, and the alternatives for travel to and fro are ferry, hovercraft, helicopter, and water taxi. Information about the number of fatalities due to accidents by each of these modes was available and allowed the researchers to calculate the mortality risk by mode.
 
 The choice set is not balanced, meaning that not all alternatives were available to all individuals surveyed for this study. This is due to the seasonality or occasional unavailability of some modes. For the example in this chapter, we will extract a subset of observations for those individuals who had the four alternatives available as part of their choice set. To do this, we identify all respondents with four modes: 
 ```{r}
@@ -58,6 +64,7 @@ kable(df,
   kable_styling() %>%
   add_header_above(c(" " = 2, "Cost" = 3, "Risk" = 3))
 ```
+
 The two most popular modes are Water Taxi and Ferry, with Hovercraft as a distant third. Helicopter is the most expensive mode and the least popular, in addition to being the riskier. Notice that while the cost by mode varies (due to seasonal variations in fare), `risk` is in fact a constant for each mode. For this reason, and to avoid perfect multicollinearity, any models that use this variable cannot include a constant term.
 
 The dataset includes information on number of seats, noise, crowdness, convenience of location, and clientele by mode. Finally, it includes information about the decision-makers, including whether they are African, their declared life expectancy, their declared hourly wage, their imputed hourly wage, their level of education, a self-ranked response on their degree of fatalism, gender, age, whether they have children, and if they know how to swim.
@@ -71,14 +78,10 @@ RT <- RT %>% mutate(`cost:dwage` = cost * dwage,
                     dwage2 = dwage^2)
 ```
 
-Next, we use `mlogit.data` to format the table for use with `mlogit` and `gmnl`:
+The dataset is in "long" form, which means that there is one record per decision-making situation per decision-maker. Therefore, we must format the dataframe in preparation for use with `mlogit` and `gmnl`:
 ```{r}
 RT <- mlogit.data(RT, shape = "long", choice = "choice", alt.var = "mode", id.var = "id")
 ```
-
-## More on taste variation
-
-Chapter \@ref(chapter-8) introduced the mixed logit model, a technique useful to model taste variation. In this chapter, a variation on the theme will be introduced, namely the latent class logit model. We will see how the latent class model is related to the mixed logit model.
 
 ## How to use this note
 
@@ -104,27 +107,31 @@ In this practice, you will learn about:
 
 ## Latent class logit
 
-To motivate the discussion, we begin by estimating a base model with two alternative-specific attributes, namely cost and risk. 
+To motivate the discussion, we will begin by estimating a base model with two alternative-specific attributes, namely cost and risk. 
 
 The utility function for individual $n$ and mode $i$ is as follows:
+
 $$
 V_{ni} = \beta_{cost} cost_i + \beta_{risk} {risk}_i
 $$
+
 where `safe` is the probability of completing a trip safely.
 
 This model is estimated as follows, supressing the constants in the second term of the formula:
 ```{r}
 mnl.rt0 <- mlogit(choice ~ cost + risk | 0, 
-                data = RT
-)
+                data = RT)
 summary(mnl.rt0)
 ```
 
 The coefficients for `cost` and `safe` provide useful information. In this case, the typical willingness to pay is as follows:
+
 $$
 -\frac{\partial cost}{\partial risk} = \frac{\beta_{risk}}{\beta_{cost}}
 $$
+
 Since the probability is of not surviving a trip, the ratio of the coefficients is the willingness to pay to reduce the risk of accidental death:
+
 $$
 -\frac{\beta_{p_{safe}}}{\beta_{cost}} = \frac{-0.25309}{-0.01401} \simeq 18.06
 $$
@@ -132,46 +139,56 @@ $$
 A question, however, is whether there are unobserved variations in the implicit behavior, that is, whether some individuals have more taste for life than other, and therefore their values for a statistical life vary.
 
 We will redefine the utility functions of the model in the following manner:
+
 $$
-V_{niq} = \beta_{q,cost} cost_i + \beta_{q,safe} {safe}_i
+V_{niq} = \beta_{q,cost} cost_i + \beta_{q,safe} {risk}_i
 $$
+
 where $q$ is a subindex to indicate that the coefficients are not fixed for individual $n$, but may vary. For instance, lets suppose that there are two classes, say cost-conscious individuals (class $1$) and risk-conscious individuals (say class $2$).
 
 Now the utility functions are:
+
 $$
 \begin{array}{c}
-V_{ni1} = \beta_{1,cost} cost_i + \beta_{1,safe} {safe}_i\\
-V_{ni2} = \beta_{2,cost} cost_i + \beta_{2,safe} {safe}_i
+V_{ni1} = \beta_{1,cost} cost_i + \beta_{1,risk} {risk}_i\\
+V_{ni2} = \beta_{2,cost} cost_i + \beta_{2,risk} {risk}_i
 \end{array}
 $$
+
 with:
+
 $$
 \begin{array}{c}
-\beta_{1,cost} \neq \beta_{1,cost}\\
+\beta_{1,cost} \neq \beta_{2,cost}\\
 \text{and}\\
-\beta_{1,risk} \neq \beta_{1,risk}\\
+\beta_{1,risk} \neq \beta_{2,risk}\\
 \end{array}
 $$
 
 Making the usual assumption about the random utility (i.e., Extreme Value Type I), the probability that an individual who is cost-conscious will choose alternative $i$ is:
+
 $$
 \frac{e^{V_{ni1}}}{\sum_k e^{V_{nk1}}}
 $$
+
 and the probability that an individual who is risk-conscious will choose alternative $i$ is:
+
 $$
 \frac{e^{V_{ni2}}}{\sum_k e^{V_{nk2}}}
 $$
 
 The issue, however, is that we do not know which decision-makers belong to which class, therefore the term _latent classes_. A way to proceed is to assume that decision-makers belong with certain probability to each class of decision makers, say $p_1$ and $p_2$. In this way, we can condition the probability of choosing $i$ on the probability of a decision-maker being in each class:
+
 $$
 \begin{array}{l}
-  P_{ni|1} = p_q\frac{e^{V_{ni1}}}{\sum_k e^{V_{nk1}}}\\
+  P_{ni|1} = p_1\frac{e^{V_{ni1}}}{\sum_k e^{V_{nk1}}}\\
 \text{and}\\
-  P_{ni|2} = p_q\frac{e^{V_{ni2}}}{\sum_k e^{V_{nk2}}}\\
+  P_{ni|2} = p_2\frac{e^{V_{ni2}}}{\sum_k e^{V_{nk2}}}\\
 \end{array}
 $$
 
 The probability of belonging to each latent class can be defined by means of a logit-like expression:
+
 $$
 \begin{array}{c}
 p_1 = \frac{e^{\gamma_1}}{e^{\gamma_1} + e^{\gamma_2}}\\
@@ -179,7 +196,9 @@ p_1 = \frac{e^{\gamma_1}}{e^{\gamma_1} + e^{\gamma_2}}\\
 p_2 = \frac{e^{\gamma_2}}{e^{\gamma_1} + e^{\gamma_2}}\\
 \end{array}
 $$
+
 or, if we define $\gamma_1=0$:
+
 $$
 \begin{array}{c}
 p_1 = \frac{1}{1 + e^{\gamma_2}}\\
@@ -187,12 +206,15 @@ p_1 = \frac{1}{1 + e^{\gamma_2}}\\
 p_2 = \frac{e^{\gamma_2}}{1 + e^{\gamma_2}}\\
 \end{array}
 $$
+
 which implies that:
+
 $$
 p_1 + p_2 = \frac{1}{1 + e^{\gamma_2}} + \frac{e^{\gamma_2}}{1 + e^{\gamma_2}} = 1
 $$
 
 Accordingly, the unconditional probability of the decision-maker choosing alternative $i$ is:
+
 $$
 P_{ni} = p_1\frac{e^{V_{ni1}}}{\sum_k e^{V_{nk1}}} + p_2\frac{e^{V_{ni2}}}{\sum_k e^{V_{nk2}}}
 $$
@@ -200,13 +222,17 @@ $$
 And since the sum of probabilities $p_1 + p_2=1$, the unconditional probability is essentially the weighted average of the probabilities for each latent class.
 
 More generally, we allow for an arbitrary number of groups $q=1,2,\cdots,Q$ each with their own distinctive set of coefficients, for $Q$ latent classes, and therefore, the unconditional probability of decision-maker $n$ choosing alternative $i$ is:
+
 $$
 P_{ni} = \sum_q^Q P_{ni|q} = \sum_q^Q p_q\frac{e^{V_{niq}}}{\sum_k e^{V_{nkq}}}
 $$
+
 and the probability of belonging to each group is:
+
 $$
 p_q = \frac{e^{\gamma_q}}{\sum_{z=1}^Qe^{\gamma_z}}
 $$
+
 with $\gamma_1=0$.
 
 ## Estimation
@@ -327,7 +353,7 @@ kable(df,
                             "; Latent Class (Q=2) = ", round(lc3$logLik$maximum, digits = 3))))
 ```
 
-Notice that model LC3, despite improving the likelihood, returns non-significant parameters for the latent class model. For this reason, we compare only the multinomila logit model and LC2.
+Notice that model LC3, despite improving the likelihood, returns non-significant parameters for the latent class model. For this reason, we compare only the multinomial logit model and LC2.
 
 The $AIC$ of the base multinomial logit model is:
 ```{r}
@@ -491,23 +517,9 @@ The plot indicates that individuals with lower declared wages have a higher prob
 
 ## Exercise
 
-Load the following dataset (used in this chapter):
-```{r}
-data("RiskyTransport", package = "mlogit")
-```
-
-Select individuals who had access to all four modes of transportation:
-```{r}
-all_available <- RiskyTransport %>% group_by(chid) %>% summarise(no_rows = length(chid)) %>% filter(no_rows == 4) %>% select(chid)
-RT <- inner_join(RiskyTransport, all_available, by = "chid") %>% drop_na()
-```
-
-
-1. Estimate a mixed logit model using the Risky Transportation dataset used in this chapter. Compare the mixed logit model and the latent class logit models. Which one would you select? Discuss.
-
 Load the following dataset from the `AER` package:
 ```{r} 
 data("TravelMode", package = "AER")
 ```
 
-2. Estimate a latent class logit model. Justify your modelling decisions, including the number of classes to use and the use of covariates.
+1. Estimate a latent class logit model. Justify your modelling decisions, including the number of classes to use and the use of covariates.
